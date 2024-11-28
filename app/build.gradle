@@ -78,4 +78,7 @@ dependencies {
     //libraries for getting error messages from firebase
     implementation libs.firebase.crashlytics
     implementation libs.firebase.analytics
+
+    //auth library
+    implementation libs.google.auth.library.oauth2.http
 }
