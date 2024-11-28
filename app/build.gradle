@@ -58,6 +58,7 @@ dependencies {
 
     testImplementation libs.androidx.core
     testImplementation libs.androidx.junit
+    testImplementation libs.uiautomator
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.espresso.core
     androidTestImplementation libs.espresso.intents
