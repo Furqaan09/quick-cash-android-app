@@ -73,6 +73,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
+    // Get the extras passed through the notification and open appropriate activity when clicked
     private @NonNull Intent getIntent(@NonNull RemoteMessage message) {
         Map<String, String> data = message.getData();
         String jobTitle = data.get("jobTitle");
