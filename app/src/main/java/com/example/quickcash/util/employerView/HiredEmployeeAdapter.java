@@ -20,6 +20,7 @@ public class HiredEmployeeAdapter extends RecyclerView.Adapter<HiredEmployeeAdap
     // Define the interface for click callbacks.
     public interface OnItemClickListener {
         void onMarkCompleteClick(HiredEmployee employee);
+        void onRateEmployeeClick(HiredEmployee employee);
     }
 
     private ArrayList<HiredEmployee> hiredEmployees;
@@ -58,6 +59,7 @@ public class HiredEmployeeAdapter extends RecyclerView.Adapter<HiredEmployeeAdap
         TextView employeeEmail;
         TextView jobStatus;
         Button markAsCompleteButton;
+        Button rateEmployeeButton;
 
         public HiredEmployeeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -69,6 +71,7 @@ public class HiredEmployeeAdapter extends RecyclerView.Adapter<HiredEmployeeAdap
             employeeEmail = itemView.findViewById(R.id.employeeEmailTextView);
             jobStatus = itemView.findViewById(R.id.jobStatusTextView);
             markAsCompleteButton = itemView.findViewById(R.id.markAsCompleteButton);
+            rateEmployeeButton = itemView.findViewById(R.id.rateEmployeeButton);
         }
 
         public void bind(HiredEmployee employee, OnItemClickListener listener) {
@@ -79,6 +82,7 @@ public class HiredEmployeeAdapter extends RecyclerView.Adapter<HiredEmployeeAdap
             String empEmail = employee.getEmployeeEmail();
             String empName = employee.getEmployeeName();
             String status = employee.getJobStatus();
+            String ratingStatus = employee.getRatingStatus();
 
             jobTitleAndId.setText("Job Title: " + title);
             jobCompany.setText("Company: " + company);
@@ -87,20 +91,29 @@ public class HiredEmployeeAdapter extends RecyclerView.Adapter<HiredEmployeeAdap
             employeeName.setText("Employee Name: " + empName);
             employeeEmail.setText("Employee Email: " + empEmail);
 
-            manageFragment(status);
+            manageFragment(status, ratingStatus);
 
             // Set up click listener for viewDetailsButton
             markAsCompleteButton.setOnClickListener(v -> {
                 listener.onMarkCompleteClick(employee);
             });
+
+            rateEmployeeButton.setOnClickListener(v -> {
+                listener.onRateEmployeeClick(employee);
+            });
         }
 
-        public void manageFragment(String status) {
+        // Manage the buttons based on the retrieved status
+        public void manageFragment(String status, String ratingStatus) {
             if (status.equals("Hired")) {
                 jobStatus.setText("In Progress");
             } else if (status.equals("Completed")) {
                 jobStatus.setTextColor(Color.parseColor("#757575"));
                 jobStatus.setText(status);
+                markAsCompleteButton.setVisibility(View.GONE);
+                if (ratingStatus.equals("Not Reviewed")) {
+                    rateEmployeeButton.setVisibility(View.VISIBLE);
+                }
             }
         }
     }

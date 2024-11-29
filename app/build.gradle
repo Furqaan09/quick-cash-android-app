@@ -32,7 +32,7 @@ android {
     buildFeatures {
         viewBinding true
     }
-git
+
     packagingOptions {
         merge 'META-INF/INDEX.LIST'
         merge 'META-INF/LICENSE'

@@ -86,7 +86,6 @@
                 android:id="@+id/applicationSubmitButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="24dp"
                 android:ems="11"
                 android:text="Submit"
                 android:backgroundTint="#2196f3" />

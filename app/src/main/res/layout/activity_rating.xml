@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".util.ratingSystem.RatingActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center">
+
+        <!-- Star Rating Section -->
+        <LinearLayout
+            android:id="@+id/starRatingContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Star 1 -->
+            <ImageButton
+                android:id="@+id/star1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#00FFFFFF"
+                android:clickable="true"
+                android:contentDescription="Star 1"
+                app:srcCompat="@android:drawable/btn_star"
+                app:tint="#E0DADA" />
+
+            <!-- Star 2 -->
+            <ImageButton
+                android:id="@+id/star2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#00FFFFFF"
+                app:srcCompat="@android:drawable/btn_star"
+                android:contentDescription="Star 2"
+                android:clickable="true"
+                app:tint="#E0DADA"/>
+
+            <!-- Star 3 -->
+            <ImageButton
+                android:id="@+id/star3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#00FFFFFF"
+                app:srcCompat="@android:drawable/btn_star"
+                android:contentDescription="Star 3"
+                android:clickable="true"
+                app:tint="#E0DADA"/>
+
+            <!-- Star 4 -->
+            <ImageButton
+                android:id="@+id/star4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#00FFFFFF"
+                app:srcCompat="@android:drawable/btn_star"
+                android:contentDescription="Star 4"
+                android:clickable="true"
+                app:tint="#E0DADA"/>
+
+            <!-- Star 5 -->
+            <ImageButton
+                android:id="@+id/star5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#00FFFFFF"
+                app:srcCompat="@android:drawable/btn_star"
+                android:contentDescription="Star 5"
+                android:clickable="true"
+                app:tint="#E0DADA"/>
+        </LinearLayout>
+
+        <!-- Feedback Text Field -->
+        <EditText
+            android:id="@+id/feedbackTextField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter your feedback here"
+            android:layout_marginTop="16dp"
+            android:padding="10dp"
+            android:background="@android:drawable/editbox_background" />
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#757575" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
