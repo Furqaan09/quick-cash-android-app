@@ -1,5 +1,6 @@
 package com.example.quickcash.util.notificationService;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -37,19 +38,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String body = message.getNotification().getBody();
 
             // Extract additional data if present
-            Map<String, String> data = message.getData();
-            String jobTitle = data.get("jobTitle");
-            String jobId = data.get("jobId");
-            String jobType = data.get("jobType");
-            String jobLocation = data.get("jobLocation");
-
-
-            // Create an intent that opens the activity showing the notification details
-            Intent intent = new Intent(this, EmployeeActivity.class);
-            intent.putExtra("jobTitle", jobTitle);
-            intent.putExtra("jobId", jobId);
-            intent.putExtra("jobType", jobType);
-            intent.putExtra("jobLocation", jobLocation);
+            @SuppressLint("UnsafeIntentLaunch") Intent intent = getIntent(message);
 
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     this,
@@ -82,6 +71,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             // Display the notification
             notificationManager.notify((int) System.currentTimeMillis(), notificationBuilder.build());
         }
+    }
+
+    private @NonNull Intent getIntent(@NonNull RemoteMessage message) {
+        Map<String, String> data = message.getData();
+        String jobTitle = data.get("jobTitle");
+        String jobId = data.get("jobId");
+        String jobType = data.get("jobType");
+        String jobLocation = data.get("jobLocation");
+
+
+        // Create an intent that opens the activity showing the notification details
+        Intent intent = new Intent(this, EmployeeActivity.class);
+        intent.putExtra("jobTitle", jobTitle);
+        intent.putExtra("jobId", jobId);
+        intent.putExtra("jobType", jobType);
+        intent.putExtra("jobLocation", jobLocation);
+        return intent;
     }
 
 }
