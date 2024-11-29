@@ -79,10 +79,10 @@ public class JobPostingActivity extends AppCompatActivity {
     }
 
     private void initializeFirebase() {
+        mAuth = FirebaseAuth.getInstance();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseCRUD = new FirebaseCRUD(firebaseDatabase);
         firebasePreferredEmployerJobPostNotifier = new FirebasePreferredEmployerJobPostNotifier(this, getEmployerUid());
-        mAuth = FirebaseAuth.getInstance();
     }
 
     /**
