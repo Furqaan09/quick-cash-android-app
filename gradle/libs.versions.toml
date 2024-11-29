@@ -3,14 +3,15 @@ agp = "8.2.2"
 firebaseAnalytics = "22.1.2"
 firebaseCrashlytics = "19.2.1"
 firebaseMessaging = "24.1.0"
+googleAuthLibraryOauth2Http = "1.30.0"
 junit = "4.13.2"
 espressoCore = "3.6.1"
 espressoIntents = "3.6.1"  # Added for espresso-intents
 appcompat = "1.7.0"
 material = "1.12.0"
-activity = "1.9.2"
-constraintLayout = "2.1.4"
-firebaseBom = "33.4.0"
+activity = "1.9.3"
+constraintLayout = "2.2.0"
+firebaseBom = "33.6.0"
 mockitoCore = "4.11.0"
 playServicesAuth = "21.2.0"
 androidxJunit = "1.2.1"
@@ -26,6 +27,7 @@ volley = "1.2.1"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+google-auth-library-oauth2-http = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "googleAuthLibraryOauth2Http" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintLayout" }

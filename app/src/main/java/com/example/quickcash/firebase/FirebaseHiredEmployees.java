@@ -42,11 +42,13 @@ public class FirebaseHiredEmployees {
 
                             for (DataSnapshot applicationSnapshot : snapshot.getChildren()) {
                                 String status = applicationSnapshot.child("applicantStatus").getValue(String.class);
-                                if ("Hired".equals(status)) {
+                                if ("Hired".equals(status) || "Completed".equals(status)) {
                                     String employeeName = applicationSnapshot.child("applicantName").getValue(String.class);
                                     String employeeEmail = applicationSnapshot.child("applicantEmail").getValue(String.class);
                                     String startDate = applicationSnapshot.child("startDate").getValue(String.class);
                                     String salary = applicationSnapshot.child("salary").getValue(String.class);
+                                    String reviewStatus = applicationSnapshot.child("employeeReview").getValue(String.class);
+                                    String applicationID = applicationSnapshot.getKey();
 
                                     String jobTitleAndId = jobTitle + " - #" + jobId;
                                     HiredEmployee hiredEmployee = new HiredEmployee(
@@ -56,7 +58,9 @@ public class FirebaseHiredEmployees {
                                             salary,
                                             employeeName,
                                             employeeEmail,
-                                            status
+                                            status,
+                                            reviewStatus,
+                                            applicationID
                                     );
                                     hiredEmployees.add(hiredEmployee);
                                 }

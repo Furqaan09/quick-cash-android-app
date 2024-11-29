@@ -32,6 +32,15 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    packagingOptions {
+        merge 'META-INF/INDEX.LIST'
+        merge 'META-INF/LICENSE'
+        merge 'META-INF/LICENSE.txt'
+        merge 'META-INF/NOTICE'
+        merge 'META-INF/NOTICE.txt'
+        merge 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
@@ -79,4 +88,7 @@ dependencies {
     //libraries for getting error messages from firebase
     implementation libs.firebase.crashlytics
     implementation libs.firebase.analytics
+
+    //auth library
+    implementation libs.google.auth.library.oauth2.http
 }
