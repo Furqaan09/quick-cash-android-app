@@ -18,6 +18,9 @@
         <activity
             android:name=".util.employerView.HiredEmployeesActivity"
             android:exported="false" />
+        <activity
+            android:name=".util.employeeView.PreferredEmployersActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -72,6 +75,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".util.notificationService.MyFirebaseMessagingService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

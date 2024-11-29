@@ -1,7 +1,9 @@
 package com.example.quickcash.util.employeeView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -9,7 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.quickcash.R;
 import com.example.quickcash.firebase.FirebaseEmployerProfile;
-import com.example.quickcash.util.employeeView.EmployerProfile;
+import com.example.quickcash.firebase.FirebasePreferredEmployers;
+import com.example.quickcash.ui.JobDetailsActivity;
 
 public class EmployerProfileActivity extends AppCompatActivity {
 
@@ -17,28 +20,31 @@ public class EmployerProfileActivity extends AppCompatActivity {
     private TextView emailTextView;
     private TextView phoneTextView;
     private TextView ratingTextView;
+    private Button addToPreferredButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employer_profile);
 
-        // Initialize views
+        initializeViews();
+
+        // Get jobId from the intent
+        String jobId = getIntent().getStringExtra("JobID");
+        fetchEmployerProfile(jobId);
+    }
+
+    // Initialize views
+    private void initializeViews() {
         nameTextView = findViewById(R.id.employerNameTextView);
         emailTextView = findViewById(R.id.employerEmailTextView);
         phoneTextView = findViewById(R.id.employerPhoneTextView);
         ratingTextView = findViewById(R.id.employerRatingTextView);
-
-        // Get jobId from the intent
-        String jobId = getIntent().getStringExtra("JobID");
-
-        if (jobId != null) {
-            fetchEmployerProfile(jobId);
-        } else {
-            Toast.makeText(this, "Job ID not found.", Toast.LENGTH_SHORT).show();
-        }
+        addToPreferredButton = findViewById(R.id.addToPreferredListButton);
+        addToPreferredButton.setOnClickListener(v -> handleAddToPreferred());
     }
 
+    // Fetch and display the Employer profile
     private void fetchEmployerProfile(String jobId) {
         FirebaseEmployerProfile firebaseEmployerProfile = new FirebaseEmployerProfile();
         firebaseEmployerProfile.fetchEmployerProfile(jobId, new FirebaseEmployerProfile.OnEmployerProfileFetchedListener() {
@@ -67,5 +73,15 @@ public class EmployerProfileActivity extends AppCompatActivity {
                 Log.e("EmployerProfile", errorMessage);
             }
         });
+    }
+
+    // Handle on click Add to Preferred Button
+    private void handleAddToPreferred() {
+        String employerEmail = emailTextView.getText().toString().replace("Email: ", "").trim();
+
+        FirebasePreferredEmployers firebasePreferredEmployers = new FirebasePreferredEmployers();
+        firebasePreferredEmployers.addPreferredEmployer(employerEmail);
+
+        Toast.makeText(this, "Employer Added to Preferred List", Toast.LENGTH_SHORT).show();
     }
 }
