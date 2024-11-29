@@ -225,6 +225,17 @@
                 android:visibility="gone" />
 
             <Button
+                android:id="@+id/addToPreferredJobsButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="#2196F3"
+                android:text="Add to Preferred Jobs"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <Button
                 android:id="@+id/applyButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -13,9 +13,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.quickcash.R;
+import com.example.quickcash.firebase.FirebasePreferredJobs;
 import com.example.quickcash.util.employeeView.EmployerProfileActivity;
 import com.example.quickcash.util.employerView.JobApplicantsActivity;
-import com.example.quickcash.R;
 import com.example.quickcash.util.jobPost.JobPost;
 
 public class JobDetailsActivity extends AppCompatActivity {
@@ -76,31 +77,35 @@ public class JobDetailsActivity extends AppCompatActivity {
         if (role != null && role.equals("employee")) {
             Button applyButton = findViewById(R.id.applyButton);
             applyButton.setVisibility(View.VISIBLE);
-            applyButton.setOnClickListener(view -> handelApply());
+            applyButton.setOnClickListener(view -> handleApply());
 
             Button employerProfileButton = findViewById(R.id.employerProfileButton);
             employerProfileButton.setVisibility(View.VISIBLE);
             employerProfileButton.setOnClickListener(v -> {
                 Intent intent = new Intent(JobDetailsActivity.this, EmployerProfileActivity.class);
-                intent.putExtra("JobID" ,jobPost.getJobID());
+                intent.putExtra("JobID", jobPost.getJobID());
                 startActivity(intent);
             });
 
+            // add to preferred jobs button logic
+            Button addToPreferredJobsButton = findViewById(R.id.addToPreferredJobsButton);
+            addToPreferredJobsButton.setVisibility(View.VISIBLE);
+            addToPreferredJobsButton.setOnClickListener(v -> handleAddToPreferredJobs());
         } else {
             Button viewApplicantsButton = findViewById(R.id.viewApplicantsButton);
             viewApplicantsButton.setVisibility(View.VISIBLE);
-            viewApplicantsButton.setOnClickListener(view -> handelViewApplicants());
+            viewApplicantsButton.setOnClickListener(view -> handleViewApplicants());
         }
     }
 
-    protected void handelApply() {
+    protected void handleApply() {
         Intent apply = new Intent(JobDetailsActivity.this, JobApplicationActivity.class);
         apply.putExtra("jobId", jobPost.getJobID());
         apply.putExtra("jobTitle", jobPost.getJobTitle());
         startActivity(apply);
     }
 
-    protected void handelViewApplicants() {
+    protected void handleViewApplicants() {
         String jobIDStr = jobPost.getJobID();
 
         if (jobIDStr != null) {
@@ -110,5 +115,11 @@ public class JobDetailsActivity extends AppCompatActivity {
         } else {
             Toast.makeText(JobDetailsActivity.this, "No Job ID available", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    protected void handleAddToPreferredJobs() {
+        FirebasePreferredJobs firebasePreferredJobs = new FirebasePreferredJobs();
+        firebasePreferredJobs.addPreferredJob(jobPost.getJobTitle());
+        Toast.makeText(this, "Job added to preferred list.", Toast.LENGTH_SHORT).show();
     }
 }
