@@ -37,28 +37,32 @@ public class FirebasePreferredEmployerJobPostNotifier {
     private final Context context;
 
     private String employerUID;
-    private String employerName;
 
     public FirebasePreferredEmployerJobPostNotifier(Context context, String employerUID) {
         this.context = context;
         this.employerUID = employerUID;
         this.requestQueue = Volley.newRequestQueue(context);
-        setEmployerName();
     }
 
-    private void setEmployerName() {
+    // Method to fetch the employer name with a callback listener
+    private void fetchEmployerName(OnEmployerNameReadyListener listener) {
         DatabaseReference employerRef = FirebaseDatabase.getInstance().getReference("users/employer");
-        employerRef.child(employerUID).addValueEventListener(new ValueEventListener() {
+        employerRef.child(employerUID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                employerName = snapshot.child("name").getValue(String.class);
+                String employerName = snapshot.child("name").getValue(String.class);
+                listener.onEmployerNameReady(employerName);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("Employer Details", "Error loading employer details "+error);
+                Log.e("EmployerNameError", "Error fetching employer name: " + error.getMessage());
             }
         });
+    }
+
+    public interface OnEmployerNameReadyListener {
+        void onEmployerNameReady(String employerName);
     }
 
     private void getAccessToken(AccessTokenListener listener) {
@@ -89,50 +93,52 @@ public class FirebasePreferredEmployerJobPostNotifier {
 
 
     public void sendJobNotification(String jobTitle, String jobId, String jobType, String jobLocation) {
-        getAccessToken(new AccessTokenListener() {
-            @Override
-            public void onAccessTokenReceived(String token) {
-                try {
-                    // Build the notification payload
-                    JSONObject notificationBody = new JSONObject();
-                    notificationBody.put("title", employerName + " has just posted a new job");
-                    notificationBody.put("body", jobTitle + " - #" + jobId + "\n" + jobType + "\n" + jobLocation);
+        fetchEmployerName(employerName -> {
+            getAccessToken(new AccessTokenListener() {
+                @Override
+                public void onAccessTokenReceived(String token) {
+                    try {
+                        // Build the notification payload
+                        JSONObject notificationBody = new JSONObject();
+                        notificationBody.put("title", employerName + " has just posted a new job");
+                        notificationBody.put("body", jobTitle + " - #" + jobId + "\n" + jobType + "\n" + jobLocation);
 
-                    JSONObject message = new JSONObject();
-                    message.put("topic", "preferred_employer_" + employerUID);
-                    message.put("notification", notificationBody);
+                        JSONObject message = new JSONObject();
+                        message.put("topic", "preferred_employer_" + employerUID);
+                        message.put("notification", notificationBody);
 
-                    JSONObject notificationPayload = new JSONObject();
-                    notificationPayload.put("message", message);
+                        JSONObject notificationPayload = new JSONObject();
+                        notificationPayload.put("message", message);
 
-                    JsonObjectRequest request = new JsonObjectRequest(
-                            Request.Method.POST,
-                            PUSH_NOTIFICATION_ENDPOINT,
-                            notificationPayload,
-                            response -> Log.d("NotificationResponse", "Response: " + response.toString()),
-                            error -> {
-                                Log.e("NotificationError", "Error: " + error.toString());
-                                Toast.makeText(context, "Failed to send notification", Toast.LENGTH_SHORT).show();
-                            }) {
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> headers = new HashMap<>();
-                            headers.put("Content-Type", "application/json; charset=UTF-8");
-                            headers.put("Authorization", "Bearer " + token);
-                            return headers;
-                        }
-                    };
+                        JsonObjectRequest request = new JsonObjectRequest(
+                                Request.Method.POST,
+                                PUSH_NOTIFICATION_ENDPOINT,
+                                notificationPayload,
+                                response -> Log.d("NotificationResponse", "Response: " + response.toString()),
+                                error -> {
+                                    Log.e("NotificationError", "Error: " + error.toString());
+                                    Toast.makeText(context, "Failed to send notification", Toast.LENGTH_SHORT).show();
+                                }) {
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                Map<String, String> headers = new HashMap<>();
+                                headers.put("Content-Type", "application/json; charset=UTF-8");
+                                headers.put("Authorization", "Bearer " + token);
+                                return headers;
+                            }
+                        };
 
-                    requestQueue.add(request);
-                } catch (JSONException e) {
-                    Log.e("NotificationJSONException", "Error creating JSON: " + e.getMessage());
+                        requestQueue.add(request);
+                    } catch (JSONException e) {
+                        Log.e("NotificationJSONException", "Error creating JSON: " + e.getMessage());
+                    }
                 }
-            }
 
-            @Override
-            public void onAccessTokenError(Exception exception) {
-                Log.e("AccessTokenError", "Error retrieving access token: " + exception.getMessage());
-            }
+                @Override
+                public void onAccessTokenError(Exception exception) {
+                    Log.e("AccessTokenError", "Error retrieving access token: " + exception.getMessage());
+                }
+            });
         });
     }
 }

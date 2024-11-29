@@ -32,6 +32,15 @@ android {
     buildFeatures {
         viewBinding true
     }
+git
+    packagingOptions {
+        merge 'META-INF/INDEX.LIST'
+        merge 'META-INF/LICENSE'
+        merge 'META-INF/LICENSE.txt'
+        merge 'META-INF/NOTICE'
+        merge 'META-INF/NOTICE.txt'
+        merge 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
