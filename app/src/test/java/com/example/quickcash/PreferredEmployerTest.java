@@ -35,10 +35,8 @@ public class PreferredEmployerTest {
         ActivityScenario.launch(intent);
     }
 
-    /**
-     * Test to verify that clicking the Preferred Employers button navigates
-     * to the Preferred Employers page and displays the title
-     */
+    // Test to verify that clicking the Preferred Employers button navigates to the
+    // Preferred Employers page and displays the title
     @Test
     public void moveToPreferredEmployersActivity() {
         String preferredEmployersButtonId = "preferredEmployersButton";
