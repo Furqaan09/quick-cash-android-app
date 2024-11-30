@@ -1,62 +1,35 @@
 package com.example.quickcash.firebase;
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class FirebasePreferredJobs {
 
-    private final DatabaseReference preferredJobsRef;
+    private DatabaseReference preferredJobsRef;
+    private String currentUserUID;
 
+    // Constructor
     public FirebasePreferredJobs() {
-        // reference to preferred jobs node in firebase
-        preferredJobsRef = FirebaseDatabase.getInstance().getReference("preferred_jobs");
+        this.preferredJobsRef = FirebaseDatabase.getInstance().getReference("preferred_jobs");
+        this.currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    // add job to users preferred jobs
+    // Add a job title to the preferred list
     public void addPreferredJob(String jobTitle) {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        if (userId != null && jobTitle != null) {
-            preferredJobsRef.child(userId).child(jobTitle).setValue(true)
-                    .addOnSuccessListener(aVoid -> {
-                        // successfully added to preferred jobs list
-                        System.out.println("Job added to preferred jobs list.");
-                    })
-                    .addOnFailureListener(e -> {
-                        // error
-                        System.err.println("Failed to add job to preferred jobs list: " + e.getMessage());
-                    });
-        } else {
-            System.err.println("Error: User ID or Job Title is null.");
-        }
+        String formattedJobTitle = jobTitle.replace(" ", "_"); // Replace spaces with underscores
+        preferredJobsRef.child(currentUserUID).child(formattedJobTitle).setValue(true)
+                .addOnSuccessListener(aVoid -> Log.d("PreferredJobs", "Added preferred job: " + jobTitle))
+                .addOnFailureListener(e -> Log.e("PreferredJobs", "Failed to add preferred job: " + e.getMessage()));
     }
 
-    // remove a job from users preferred jobs list
+    // Remove a job title from the preferred list
     public void removePreferredJob(String jobTitle) {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        if (userId != null && jobTitle != null) {
-            preferredJobsRef.child(userId).child(jobTitle).removeValue()
-                    .addOnSuccessListener(aVoid -> {
-                        // successfully removed from preferred jobs list
-                        System.out.println("Job removed from preferred jobs list.");
-                    })
-                    .addOnFailureListener(e -> {
-                        // error
-                        System.err.println("Failed to remove job from preferred jobs list: " + e.getMessage());
-                    });
-        } else {
-            System.err.println("Error: User ID or Job Title is null.");
-        }
-    }
-
-    // fetches preferred jobs for current user
-    public DatabaseReference getPreferredJobsForCurrentUser() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        if (userId != null) {
-            return preferredJobsRef.child(userId);
-        }
-        return null;
+        String formattedJobTitle = jobTitle.replace(" ", "_"); // Replace spaces with underscores
+        preferredJobsRef.child(currentUserUID).child(formattedJobTitle).removeValue()
+                .addOnSuccessListener(aVoid -> Log.d("PreferredJobs", "Removed preferred job: " + jobTitle))
+                .addOnFailureListener(e -> Log.e("PreferredJobs", "Failed to remove preferred job: " + e.getMessage()));
     }
 }

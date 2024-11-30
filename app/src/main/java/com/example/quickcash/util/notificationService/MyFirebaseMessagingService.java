@@ -1,13 +1,11 @@
 package com.example.quickcash.util.notificationService;
 
-import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -37,9 +35,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String title = message.getNotification().getTitle();
             String body = message.getNotification().getBody();
 
-            // Extract additional data if present
-            @SuppressLint("UnsafeIntentLaunch") Intent intent = getIntent(message);
-
+            Intent intent = new Intent(this, EmployeeActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     this,
                     0,
@@ -71,24 +67,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             // Display the notification
             notificationManager.notify((int) System.currentTimeMillis(), notificationBuilder.build());
         }
-    }
-
-    // Get the extras passed through the notification and open appropriate activity when clicked
-    private @NonNull Intent getIntent(@NonNull RemoteMessage message) {
-        Map<String, String> data = message.getData();
-        String jobTitle = data.get("jobTitle");
-        String jobId = data.get("jobId");
-        String jobType = data.get("jobType");
-        String jobLocation = data.get("jobLocation");
-
-
-        // Create an intent that opens the activity showing the notification details
-        Intent intent = new Intent(this, EmployeeActivity.class);
-        intent.putExtra("jobTitle", jobTitle);
-        intent.putExtra("jobId", jobId);
-        intent.putExtra("jobType", jobType);
-        intent.putExtra("jobLocation", jobLocation);
-        return intent;
     }
 
 }
