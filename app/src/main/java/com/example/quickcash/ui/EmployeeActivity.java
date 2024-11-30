@@ -55,7 +55,6 @@ public class EmployeeActivity extends AppCompatActivity implements JobPostAdapte
 
     private FirebaseAuth mAuth;
     private FirebaseNotificationSubscriptionManager subscriptionManager;
-    private FirebasePreferredEmployers preferredEmployers;
     private boolean isDropdownExpanded = false;
     private LinearLayout dropdownContent;
     private ImageView triangleIcon;
@@ -77,7 +76,6 @@ public class EmployeeActivity extends AppCompatActivity implements JobPostAdapte
         // initialize the firebase authorization
         mAuth = FirebaseAuth.getInstance();
         subscriptionManager = new FirebaseNotificationSubscriptionManager();
-        preferredEmployers = new FirebasePreferredEmployers();
 
         Button applicationStatusButton = findViewById(R.id.applicationStatusButton);
         EditText jobTitleEditText = findViewById(R.id.searchEditText);
@@ -154,7 +152,7 @@ public class EmployeeActivity extends AppCompatActivity implements JobPostAdapte
         logoutButton.setOnClickListener(v -> {
             // Unsubscribe from all topics to stop receiving notifications
             subscriptionManager.unsubscribeFromPreferredJobs();
-            preferredEmployers.unsubscribeFromEmployerTopic();
+            subscriptionManager.unsubscribeFromEmployerTopic();
 
             // log out
             mAuth.signOut();
