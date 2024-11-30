@@ -21,11 +21,15 @@ public class FirebaseLogin {
     // Instance variables
     private FirebaseAuth auth;
     private DatabaseReference dbRef;
+    private FirebaseNotificationSubscriptionManager subscriptionManager;
+    private FirebasePreferredEmployers preferredEmployers;
 
     // Constructor
     public FirebaseLogin() {
         this.dbRef = FirebaseDatabase.getInstance().getReference("users");
         this.auth = FirebaseAuth.getInstance();
+        this.subscriptionManager = new FirebaseNotificationSubscriptionManager();
+        this.preferredEmployers = new FirebasePreferredEmployers();
     }
 
     // This method is used to authenticate sign in depending on whether the user has an account
@@ -60,6 +64,10 @@ public class FirebaseLogin {
                                     Intent employee = new Intent(context, EmployeeActivity.class);
                                     employee.putExtra("jobSeekerID", email);
                                     context.startActivity(employee);
+
+                                    // Subscribe to the topics to start getting notifications
+                                    subscriptionManager.subscribeToPreferredJobs();
+                                    preferredEmployers.subscribeToEmployerTopic();
                                 } else {
                                     Intent employer = new Intent(context, EmployerActivity.class);
                                     employer.putExtra("jobPosterID", email);

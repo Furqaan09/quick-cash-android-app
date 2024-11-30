@@ -20,17 +20,22 @@ public class FirebasePreferredEmployers {
     // Instance variables
     private DatabaseReference prefEmployerRef;
     private DatabaseReference employerRef;
-    private String currentUserUID;
+
 
     // Constructor
     public FirebasePreferredEmployers() {
         this.prefEmployerRef = FirebaseDatabase.getInstance().getReference("preferred_employers");
         this.employerRef = FirebaseDatabase.getInstance().getReference("users/employer");
-        this.currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
+    public String getCurrentUserUID() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     // This method is used to return all preferred employers for the logged in employee
     public void returnAllPreferredEmployers(OnEmployersLoadedListener listener) {
+        String currentUserUID = getCurrentUserUID();
+
         // Get the current users UID node under the preferred_employers node
         prefEmployerRef.child(currentUserUID).addValueEventListener(new ValueEventListener() {
             @Override
@@ -82,10 +87,12 @@ public class FirebasePreferredEmployers {
 
     // This method removes the employer from the preferred employers list by deleting the node in firebase
     public void removePreferredEmployer(String employerUID, OnEmployerRemovedListener listener) {
+        String currentUserUID = getCurrentUserUID();
+
         prefEmployerRef.child(currentUserUID).child(employerUID).removeValue((error, ref) -> {
             if (error == null) {
                 // Unsubscribe from the topic to stop receiving notifications from this employer
-                unsubscribeFromEmployerTopic(employerUID);
+                unsubscribeFromEmployerTopic();
                 listener.onSuccess();
             }
         });
@@ -93,6 +100,8 @@ public class FirebasePreferredEmployers {
 
     // This method adds an Employer to the Preferred employer list by creating a new node in firebase
     public void addPreferredEmployer(String employerEmail) {
+        String currentUserUID = getCurrentUserUID();
+
         employerRef.orderByChild("email").equalTo(employerEmail).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -101,7 +110,7 @@ public class FirebasePreferredEmployers {
 
                     prefEmployerRef.child(currentUserUID).child(employerUID).setValue(true).addOnSuccessListener(aVoid -> {
                         // Subscribe to the topic to start receiving notifications from this employer
-                        subscribeToEmployerTopic(employerUID);
+                        subscribeToEmployerTopic();
                     });
                     break;
                 }
@@ -115,27 +124,57 @@ public class FirebasePreferredEmployers {
     }
 
     // Subscribe to the FCM topic for the employer
-    private void subscribeToEmployerTopic(String employerUID) {
-        FirebaseMessaging.getInstance().subscribeToTopic("preferred_employer_" + employerUID)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d("FirebasePreferred", "Subscribed to topic: preferred_employer_" + employerUID);
-                    } else {
-                        Log.e("FirebasePreferred", "Failed to subscribe to topic: preferred_employer_" + employerUID);
-                    }
-                });
+    public void subscribeToEmployerTopic() {
+        String currentUserUID = getCurrentUserUID();
+
+        prefEmployerRef.child(currentUserUID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot employerSnapshot : snapshot.getChildren()) {
+                    String employerUID = employerSnapshot.getKey();
+                    FirebaseMessaging.getInstance().subscribeToTopic("preferred_employer_" + employerUID)
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Log.d("PreferredEmployer", "Subscribed to topic: preferred_employer_" + employerUID);
+                                } else {
+                                    Log.e("PreferredEmployer", "Failed to subscribe to topic: preferred_employer_" + employerUID);
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("PreferredEmployer", "Error loading preferred employers: " + error.getMessage());
+            }
+        });
     }
 
     // Unsubscribe from the FCM topic for the employer
-    private void unsubscribeFromEmployerTopic(String employerUID) {
-        FirebaseMessaging.getInstance().unsubscribeFromTopic("preferred_employer_" + employerUID)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d("FirebasePreferred", "Unsubscribed from topic: preferred_employer_" + employerUID);
-                    } else {
-                        Log.e("FirebasePreferred", "Failed to unsubscribe from topic: preferred_employer_" + employerUID);
-                    }
-                });
+    public void unsubscribeFromEmployerTopic() {
+        String currentUserUID = getCurrentUserUID();
+
+        prefEmployerRef.child(currentUserUID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot employerSnapshot : snapshot.getChildren()) {
+                    String employerUID = employerSnapshot.getKey();
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic("preferred_employer_" + employerUID)
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Log.d("PreferredEmployer", "Unsubscribed from topic: preferred_employer_" + employerUID);
+                                } else {
+                                    Log.e("PreferredEmployer", "Failed to unsubscribe from topic: preferred_employer_" + employerUID);
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("PreferredEmployer", "Error loading preferred employers: " + error.getMessage());
+            }
+        });
     }
 
     public interface OnEmployersLoadedListener {

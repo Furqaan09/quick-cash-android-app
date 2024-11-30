@@ -44,8 +44,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String title = message.getNotification().getTitle();
             String body = message.getNotification().getBody();
 
-            // If data contains role key then it is a preferred "job" notification else preferred "employer"
-            if (data.containsKey("role")) {
+            // If data contains jobPosterId key then it is a preferred "job" notification else preferred "employer"
+            if (data.containsKey("jobPosterId")) {
                 // Extract job details from the data payload
                 String jobId = data.get("jobId");
                 String jobPosterId = data.get("jobPosterId");
@@ -57,7 +57,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 String industry = data.get("industry");
                 String jobLocation = data.get("jobLocation");
                 String postedDate = data.get("postedDate");
-                String role = data.get("role");
 
                 // Create a JobPost object to pass to the activity
                 JobPost jobPost = new JobPost(
@@ -76,7 +75,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 // Intent to open JobDetailsActivity with job details
                 Intent intent = new Intent(this, JobDetailsActivity.class);
                 intent.putExtra("jobPost", jobPost);
-                intent.putExtra("role", role);
+                intent.putExtra("role", "employee");
 
                 PendingIntent pendingIntent = PendingIntent.getActivity(
                         this,

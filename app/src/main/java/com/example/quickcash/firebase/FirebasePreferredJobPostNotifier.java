@@ -70,7 +70,7 @@ public class FirebasePreferredJobPostNotifier {
     }
 
     // Sends notification to user of job post with title matching a preferred job
-    public void sendJobNotification(JobPost jobPost, String role) {
+    public void sendJobNotification(JobPost jobPost) {
         // Format the job title to comply with Firebase topic naming rules
         String formattedJobTitle = jobPost.getJobTitle().replace(" ", "_");
 
@@ -96,7 +96,6 @@ public class FirebasePreferredJobPostNotifier {
                     dataPayload.put("industry", jobPost.getIndustry());
                     dataPayload.put("jobLocation", jobPost.getLocation());
                     dataPayload.put("postedDate", jobPost.getPostedDate());
-                    dataPayload.put("role", role); // Include the role for redirection logic
 
                     // Build the message payload
                     JSONObject message = new JSONObject();

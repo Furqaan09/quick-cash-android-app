@@ -22,6 +22,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.quickcash.firebase.FirebaseNotificationSubscriptionManager;
+import com.example.quickcash.firebase.FirebasePreferredEmployers;
 import com.example.quickcash.util.employeeView.EmployeeApplicationsActivity;
 import com.example.quickcash.util.employeeView.PreferredEmployersActivity;
 import com.example.quickcash.util.jobPost.JobPost;
@@ -52,6 +54,8 @@ public class EmployeeActivity extends AppCompatActivity implements JobPostAdapte
     JobPostFilter jobPostFilter;
 
     private FirebaseAuth mAuth;
+    private FirebaseNotificationSubscriptionManager subscriptionManager;
+    private FirebasePreferredEmployers preferredEmployers;
     private boolean isDropdownExpanded = false;
     private LinearLayout dropdownContent;
     private ImageView triangleIcon;
@@ -72,6 +76,9 @@ public class EmployeeActivity extends AppCompatActivity implements JobPostAdapte
 
         // initialize the firebase authorization
         mAuth = FirebaseAuth.getInstance();
+        subscriptionManager = new FirebaseNotificationSubscriptionManager();
+        preferredEmployers = new FirebasePreferredEmployers();
+
         Button applicationStatusButton = findViewById(R.id.applicationStatusButton);
         EditText jobTitleEditText = findViewById(R.id.searchEditText);
         dropdownContent = findViewById(R.id.dropdownContent);
@@ -145,6 +152,10 @@ public class EmployeeActivity extends AppCompatActivity implements JobPostAdapte
         Button logoutButton = findViewById(R.id.logoutButton);
         // Logout button
         logoutButton.setOnClickListener(v -> {
+            // Unsubscribe from all topics to stop receiving notifications
+            subscriptionManager.unsubscribeFromPreferredJobs();
+            preferredEmployers.unsubscribeFromEmployerTopic();
+
             // log out
             mAuth.signOut();
             Toast.makeText(EmployeeActivity.this, "You have been logged out.", Toast.LENGTH_SHORT).show();

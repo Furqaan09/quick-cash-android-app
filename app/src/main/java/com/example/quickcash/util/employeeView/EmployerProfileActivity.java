@@ -1,6 +1,5 @@
 package com.example.quickcash.util.employeeView;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -12,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.quickcash.R;
 import com.example.quickcash.firebase.FirebaseEmployerProfile;
 import com.example.quickcash.firebase.FirebasePreferredEmployers;
-import com.example.quickcash.ui.JobDetailsActivity;
 
 public class EmployerProfileActivity extends AppCompatActivity {
 
@@ -56,7 +54,7 @@ public class EmployerProfileActivity extends AppCompatActivity {
                 phoneTextView.setText("Phone: "+employerProfile.getPhone());
 
                 if (employerProfile.getRatingValue() != null && employerProfile.getRatingCount() != null) {
-                    double ratingValue = Integer.parseInt(employerProfile.getRatingValue());
+                    double ratingValue = Double.parseDouble(employerProfile.getRatingValue());
                     int ratingCount = Integer.parseInt(employerProfile.getRatingCount());
                     double rating = ratingValue / ratingCount;
                     ratingTextView.setText("Rating: "+ String.format("%.1f", rating));
