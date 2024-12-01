@@ -34,20 +34,25 @@ public class FirebaseEmployeeApplicationInfo {
                 int[] processedCount = {0}; // Use array to track completion inside callback
 
                 for (DataSnapshot applicationSnapshot : snapshot.getChildren()) {
+                    String applicationId = applicationSnapshot.getKey();
                     String jobId = applicationSnapshot.child("jobId").getValue(String.class);
                     String applicationDate = applicationSnapshot.child("applicationDate").getValue(String.class);
                     String status = applicationSnapshot.child("applicantStatus").getValue(String.class);
                     String applicantEmail = applicationSnapshot.child("applicantEmail").getValue(String.class);
+                    String employerRatingStatus = applicationSnapshot.child("employerReview").getValue(String.class);
 
                     if (employeeEmail.equals(applicantEmail) && jobId != null) {
-                        fetchJobDetails(jobId, (jobTitle, companyName, jobLocation) -> {
+                        fetchJobDetails(jobId, (jobTitle, companyName, jobLocation, jobPosterId) -> {
                             String jobIdAndTitle = jobTitle + "- #" + jobId;
                             ApplicationData applicationData = new ApplicationData(
                                     jobIdAndTitle,
                                     companyName,
                                     jobLocation,
                                     applicationDate,
-                                    status
+                                    status,
+                                    jobPosterId,
+                                    applicationId,
+                                    employerRatingStatus
                             );
                             employeeApplications.add(applicationData);
 
@@ -80,7 +85,8 @@ public class FirebaseEmployeeApplicationInfo {
                 String jobTitle = snapshot.child("jobTitle").getValue(String.class);
                 String companyName = snapshot.child("companyName").getValue(String.class);
                 String jobLocation = snapshot.child("location").getValue(String.class);
-                callback.onJobDetailsFetched(jobTitle, companyName, jobLocation);
+                String jobPosterID = snapshot.child("jobPosterID").getValue(String.class);
+                callback.onJobDetailsFetched(jobTitle, companyName, jobLocation, jobPosterID);
             }
 
             @Override
@@ -95,6 +101,6 @@ public class FirebaseEmployeeApplicationInfo {
     }
 
     private interface JobDetailsCallback {
-        void onJobDetailsFetched(String jobTitle, String companyName, String jobLocation);
+        void onJobDetailsFetched(String jobTitle, String companyName, String jobLocation, String employerEmail);
     }
 }

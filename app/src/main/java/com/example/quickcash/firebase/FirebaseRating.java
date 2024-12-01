@@ -13,30 +13,36 @@ import com.google.firebase.database.ValueEventListener;
 public class FirebaseRating {
 
     // Instance Variables
-    private DatabaseReference employeeRef;
+    private DatabaseReference userRef;
     private DatabaseReference applicationRef;
 
     // Constructor
     public FirebaseRating() {
-        employeeRef = FirebaseDatabase.getInstance().getReference("users/employee");
         applicationRef = FirebaseDatabase.getInstance().getReference("applications");
     }
 
-    // This method is used to rate an employee and update the ratings in the firebase
-    public void rateEmployee(String employeeID, String applicationID, String rating) {
-        // Get the employee node using the employeeID (employee Email)
-        employeeRef.orderByChild("email").equalTo(employeeID).addListenerForSingleValueEvent(new ValueEventListener() {
+    // This method is used to rate an user and update the ratings in the firebase
+    public void rateUser(String role, String userID, String applicationID, String rating) {
+
+        if (role.equals("employee")) {
+            userRef = FirebaseDatabase.getInstance().getReference("users/employee");
+        } else {
+            userRef = FirebaseDatabase.getInstance().getReference("users/employer");
+        }
+
+        // Get the user node using the userID (user Email)
+        userRef.orderByChild("email").equalTo(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot employeeSnapshot : snapshot.getChildren()) {
-                    String employeeNode = employeeSnapshot.getKey();
-                    String ratingValue = employeeSnapshot.child("ratingValue").getValue(String.class);
-                    String ratingCount = employeeSnapshot.child("ratingCount").getValue(String.class);
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    String userNode = userSnapshot.getKey();
+                    String ratingValue = userSnapshot.child("ratingValue").getValue(String.class);
+                    String ratingCount = userSnapshot.child("ratingCount").getValue(String.class);
 
                     // If the rating is null then simply add the first rating
                     if (ratingValue == null && ratingCount == null) {
-                        employeeRef.child(employeeNode).child("ratingValue").setValue(rating);
-                        employeeRef.child(employeeNode).child("ratingCount").setValue("1");
+                        userRef.child(userNode).child("ratingValue").setValue(rating);
+                        userRef.child(userNode).child("ratingCount").setValue("1");
                     } else {
                         // Convert the values in numerical form
                         double prevValue = Double.parseDouble(ratingValue);
@@ -52,19 +58,24 @@ public class FirebaseRating {
                         String newCount = String.valueOf(prevCount);
 
                         // Submit new values to firebase
-                        employeeRef.child(employeeNode).child("ratingValue").setValue(newValue);
-                        employeeRef.child(employeeNode).child("ratingCount").setValue(newCount);
+                        userRef.child(userNode).child("ratingValue").setValue(newValue);
+                        userRef.child(userNode).child("ratingCount").setValue(newCount);
                     }
 
-                    // Update the employee status as Reviewed
-                    applicationRef.child(applicationID).child("employeeReview").setValue("Reviewed");
+                    // Update the user status as Reviewed
+                    if (role.equals("employee")) {
+                        applicationRef.child(applicationID).child("employeeReview").setValue("Reviewed");
+                    } else {
+                        applicationRef.child(applicationID).child("employerReview").setValue("Reviewed");
+                    }
+
                     break;
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("Employee", "Error loading employee info: "+error);
+                Log.d("User", "Error loading user info: "+error);
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.example.quickcash.util.employeeView;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     // Define the interface for click callbacks.
     public interface OnItemClickListener {
         void onViewOfferClick(ApplicationData applicationData);
+        void onRateEmployerClick(ApplicationData applicationData);
     }
 
     private ArrayList<ApplicationData> applications;
@@ -55,6 +57,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         TextView appliedDate;
         TextView applicationStatus;
         Button viewOfferButton;
+        Button rateEmployerButton;
 
         public ApplicationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,6 +67,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             appliedDate = itemView.findViewById(R.id.applicationDate);
             applicationStatus = itemView.findViewById(R.id.statusTextView);
             viewOfferButton = itemView.findViewById(R.id.viewOfferButton);
+            rateEmployerButton = itemView.findViewById(R.id.rateEmployerButton);
         }
 
         public void bind(ApplicationData applicationData, ApplicationAdapter.OnItemClickListener listener) {
@@ -72,6 +76,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             String location = applicationData.getJobLocation();
             String date = applicationData.getApplicationDate();
             String status = applicationData.getStatus();
+            String ratingStatus = applicationData.getEmployerRatingStatus();
 
             jobTitleAndId.setText("Job Title: " + title);
             companyName.setText("Company: " + company);
@@ -79,15 +84,19 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             appliedDate.setText("Application Date: " + date);
             applicationStatus.setText(status);
 
-            manageFragment(status);
+            manageFragment(status, ratingStatus);
 
             // Set up click listener for viewDetailsButton
             viewOfferButton.setOnClickListener(v -> {
                 listener.onViewOfferClick(applicationData);
             });
+
+            rateEmployerButton.setOnClickListener(v -> {
+                listener.onRateEmployerClick(applicationData);
+            });
         }
 
-        public void manageFragment(String status) {
+        public void manageFragment(String status, String ratingStatus) {
             if (status.equals("Shortlisted")) {
                 applicationStatus.setTextColor(Color.parseColor("#D9C711"));
             } else if (status.equals("Rejected")) {
@@ -99,6 +108,9 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
                 viewOfferButton.setVisibility(View.VISIBLE);
             } else if (status.equals("Completed")) {
                 applicationStatus.setTextColor(Color.parseColor("#757575"));
+                if (ratingStatus.equals("Not Reviewed")) {
+                    rateEmployerButton.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
