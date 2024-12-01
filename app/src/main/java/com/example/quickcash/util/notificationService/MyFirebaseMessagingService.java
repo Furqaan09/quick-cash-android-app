@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.example.quickcash.R;
-import com.example.quickcash.ui.EmployeeActivity;
 import com.example.quickcash.ui.JobDetailsActivity;
 import com.example.quickcash.util.jobPost.JobPost;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -44,59 +43,48 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String title = message.getNotification().getTitle();
             String body = message.getNotification().getBody();
 
-            // If data contains jobPosterId key then it is a preferred "job" notification else preferred "employer"
-            if (data.containsKey("jobPosterId")) {
-                // Extract job details from the data payload
-                String jobId = data.get("jobId");
-                String jobPosterId = data.get("jobPosterId");
-                String jobTitle = data.get("jobTitle");
-                String companyName = data.get("companyName");
-                String description = data.get("description");
-                String jobType = data.get("jobType");
-                String experienceLevel = data.get("experienceLevel");
-                String industry = data.get("industry");
-                String jobLocation = data.get("jobLocation");
-                String postedDate = data.get("postedDate");
+            // Extract job details from the data payload
+            String jobId = data.get("jobId");
+            String jobPosterId = data.get("jobPosterId");
+            String jobTitle = data.get("jobTitle");
+            String companyName = data.get("companyName");
+            String description = data.get("description");
+            String jobType = data.get("jobType");
+            String experienceLevel = data.get("experienceLevel");
+            String industry = data.get("industry");
+            String jobLocation = data.get("jobLocation");
+            String postedDate = data.get("postedDate");
 
-                // Create a JobPost object to pass to the activity
-                JobPost jobPost = new JobPost(
-                        jobId,
-                        jobPosterId,
-                        jobTitle,
-                        jobLocation,
-                        jobType,
-                        postedDate,
-                        companyName,
-                        description,
-                        experienceLevel,
-                        industry
-                );
+            // Create a JobPost object to pass to the activity
+            JobPost jobPost = new JobPost(
+                    jobId,
+                    jobPosterId,
+                    jobTitle,
+                    jobLocation,
+                    jobType,
+                    postedDate,
+                    companyName,
+                    description,
+                    experienceLevel,
+                    industry
+            );
 
-                // Intent to open JobDetailsActivity with job details
-                Intent intent = new Intent(this, JobDetailsActivity.class);
-                intent.putExtra("jobPost", jobPost);
-                intent.putExtra("role", "employee");
+            // Intent to open JobDetailsActivity with job details
+            Intent intent = new Intent(this, JobDetailsActivity.class);
+            intent.putExtra("jobPost", jobPost);
+            intent.putExtra("role", "employee");
 
-                PendingIntent pendingIntent = PendingIntent.getActivity(
-                        this,
-                        0,
-                        intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                );
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    this,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
 
+            if (data.get("type").equals("preferred_job")) {
                 // Create and display the notification for preferred jobs
                 createNotification(title, body, pendingIntent, PREFERRED_JOBS_CHANNEL, "Preferred Jobs Notifications");
             } else {
-                // Intent to open EmployeeActivity
-                Intent intent = new Intent(this, EmployeeActivity.class);
-
-                PendingIntent pendingIntent = PendingIntent.getActivity(
-                        this,
-                        0,
-                        intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                );
-
                 // Create and display the notification for preferred jobs
                 createNotification(title, body, pendingIntent, PREFERRED_EMPLOYER_CHANNEL, "Preferred Employer Notifications");
             }

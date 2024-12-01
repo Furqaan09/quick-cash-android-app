@@ -13,7 +13,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.quickcash.util.jobPost.JobPost;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,15 +30,18 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class FirebasePreferredJobPostNotifier {
+public class FirebaseNotificationSender {
 
     private static final String CREDENTIALS_FILE_PATH = "key.json";
     private static final String PUSH_NOTIFICATION_ENDPOINT = "https://fcm.googleapis.com/v1/projects/quick-cash-64e58/messages:send";
     private final RequestQueue requestQueue;
     private final Context context;
 
-    public FirebasePreferredJobPostNotifier(Context context) {
+    private String employerUID;
+
+    public FirebaseNotificationSender(Context context, String employerUID) {
         this.context = context;
+        this.employerUID = employerUID;
         this.requestQueue = Volley.newRequestQueue(context);
     }
 
@@ -69,10 +71,44 @@ public class FirebasePreferredJobPostNotifier {
         void onAccessTokenError(Exception exception);
     }
 
+    // Method to fetch the employer name with a callback listener
+    private void fetchEmployerName(OnEmployerNameReadyListener listener) {
+        DatabaseReference employerRef = FirebaseDatabase.getInstance().getReference("users/employer");
+        employerRef.child(employerUID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String employerName = snapshot.child("name").getValue(String.class);
+                listener.onEmployerNameReady(employerName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("EmployerNameError", "Error fetching employer name: " + error.getMessage());
+            }
+        });
+    }
+
+    public interface OnEmployerNameReadyListener {
+        void onEmployerNameReady(String employerName);
+    }
+
+    public void sendJobNotification(JobPost jobPost, String type) {
+        if (type.equals("preferred_employer")) {
+            // Fetch employer name for preferred employer notification
+            fetchEmployerName(employerName -> {
+                sendNotification(jobPost, type, employerName); // Employer name is fetched and passed
+            });
+        } else {
+            // For preferred job notification, directly send the notification
+            sendNotification(jobPost, type, null); // No employer name needed for preferred job
+        }
+    }
+
+
     // Sends notification to user of job post with title matching a preferred job
-    public void sendJobNotification(JobPost jobPost) {
-        // Format the job title to comply with Firebase topic naming rules
-        String formattedJobTitle = jobPost.getJobTitle().replace(" ", "_");
+    public void sendNotification(JobPost jobPost, String type, String employerName) {
+        String jobTopic = "preferred_job_" + jobPost.getJobTitle().replace(" ", "_");
+        String employerTopic = "preferred_employer_" + employerUID;
 
         // Access token for Firebase authentication
         getAccessToken(new AccessTokenListener() {
@@ -81,8 +117,24 @@ public class FirebasePreferredJobPostNotifier {
                 try {
                     // Build the notification body
                     JSONObject notificationBody = new JSONObject();
-                    notificationBody.put("title", "A new job for " + jobPost.getJobTitle() + " has been posted!");
-                    notificationBody.put("body", jobPost.getJobType() + "\n" + jobPost.getLocation());
+                    JSONObject message = new JSONObject();
+
+                    if (type.equals("preferred_employer")) {
+
+                        // Preferred employer notification
+                        notificationBody.put("title", employerName + " just posted a new job! Check it out!");
+                        notificationBody.put("body", jobPost.getJobTitle() + " - #" + jobPost.getJobID() +
+                                "\n" + jobPost.getJobType() + "\n" + jobPost.getLocation());
+                        message.put("topic", employerTopic);
+
+                    } else if (type.equals("preferred_job")) {
+
+                        // Preferred job notification
+                        notificationBody.put("title", "A new job for \"" + jobPost.getJobTitle() + "\" has been posted! Check it out!");
+                        notificationBody.put("body", jobPost.getJobTitle() + " - #" + jobPost.getJobID() +
+                                "\n" + jobPost.getJobType() + "\n" + jobPost.getLocation());
+                        message.put("topic", jobTopic);
+                    }
 
                     // Include job post details in the data payload
                     JSONObject dataPayload = new JSONObject();
@@ -96,10 +148,9 @@ public class FirebasePreferredJobPostNotifier {
                     dataPayload.put("industry", jobPost.getIndustry());
                     dataPayload.put("jobLocation", jobPost.getLocation());
                     dataPayload.put("postedDate", jobPost.getPostedDate());
+                    dataPayload.put("type", type);
 
                     // Build the message payload
-                    JSONObject message = new JSONObject();
-                    message.put("topic", "preferred_job_" + formattedJobTitle);
                     message.put("notification", notificationBody);
                     message.put("data", dataPayload); // Attach data payload to the message
 
