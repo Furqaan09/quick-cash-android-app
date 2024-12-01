@@ -1,12 +1,6 @@
 package com.example.quickcash.firebase;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.quickcash.util.employeeView.EmployerProfile;
 import com.google.firebase.database.DataSnapshot;

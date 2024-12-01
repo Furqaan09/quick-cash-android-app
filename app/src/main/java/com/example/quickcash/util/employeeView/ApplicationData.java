@@ -1,7 +1,6 @@
 package com.example.quickcash.util.employeeView;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * Represents an application
