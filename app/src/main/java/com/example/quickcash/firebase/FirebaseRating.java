@@ -15,6 +15,8 @@ public class FirebaseRating {
     // Instance Variables
     private DatabaseReference userRef;
     private DatabaseReference applicationRef;
+    private static final String RATING_VALUE = "ratingValue";
+    private static final String RATING_COUNT = "ratingCount";
 
     // Constructor
     public FirebaseRating() {
@@ -36,16 +38,18 @@ public class FirebaseRating {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     String userNode = userSnapshot.getKey();
-                    String ratingValue = userSnapshot.child("ratingValue").getValue(String.class);
-                    String ratingCount = userSnapshot.child("ratingCount").getValue(String.class);
+                    String ratingValue = userSnapshot.child(RATING_VALUE).getValue(String.class);
+                    String ratingCount = userSnapshot.child(RATING_COUNT).getValue(String.class);
 
                     // If the rating is null then simply add the first rating
                     if (ratingValue == null && ratingCount == null) {
-                        userRef.child(userNode).child("ratingValue").setValue(rating);
-                        userRef.child(userNode).child("ratingCount").setValue("1");
+                        userRef.child(userNode).child(RATING_VALUE).setValue(rating);
+                        userRef.child(userNode).child(RATING_COUNT).setValue("1");
                     } else {
                         // Convert the values in numerical form
+                        assert ratingValue != null;
                         double prevValue = Double.parseDouble(ratingValue);
+                        assert ratingCount != null;
                         int prevCount = Integer.parseInt(ratingCount);
                         double givenRating = Double.parseDouble(rating);
 
@@ -58,8 +62,8 @@ public class FirebaseRating {
                         String newCount = String.valueOf(prevCount);
 
                         // Submit new values to firebase
-                        userRef.child(userNode).child("ratingValue").setValue(newValue);
-                        userRef.child(userNode).child("ratingCount").setValue(newCount);
+                        userRef.child(userNode).child(RATING_VALUE).setValue(newValue);
+                        userRef.child(userNode).child(RATING_COUNT).setValue(newCount);
                     }
 
                     // Update the user status as Reviewed

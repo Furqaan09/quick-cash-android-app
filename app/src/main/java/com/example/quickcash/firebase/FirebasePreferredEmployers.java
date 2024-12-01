@@ -21,6 +21,7 @@ public class FirebasePreferredEmployers {
     private DatabaseReference prefEmployerRef;
     private DatabaseReference employerRef;
     private String currentUserUID;
+    private static final String FIREBASE_PREFERRED = "FirebasePreferred";
 
     // Constructor
     public FirebasePreferredEmployers() {
@@ -119,9 +120,9 @@ public class FirebasePreferredEmployers {
         FirebaseMessaging.getInstance().subscribeToTopic("preferred_employer_" + employerUID)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d("FirebasePreferred", "Subscribed to topic: preferred_employer_" + employerUID);
+                        Log.d(FIREBASE_PREFERRED, "Subscribed to topic: preferred_employer_" + employerUID);
                     } else {
-                        Log.e("FirebasePreferred", "Failed to subscribe to topic: preferred_employer_" + employerUID);
+                        Log.e(FIREBASE_PREFERRED, "Failed to subscribe to topic: preferred_employer_" + employerUID);
                     }
                 });
     }
@@ -131,9 +132,9 @@ public class FirebasePreferredEmployers {
         FirebaseMessaging.getInstance().unsubscribeFromTopic("preferred_employer_" + employerUID)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d("FirebasePreferred", "Unsubscribed from topic: preferred_employer_" + employerUID);
+                        Log.d(FIREBASE_PREFERRED, "Unsubscribed from topic: preferred_employer_" + employerUID);
                     } else {
-                        Log.e("FirebasePreferred", "Failed to unsubscribe from topic: preferred_employer_" + employerUID);
+                        Log.e(FIREBASE_PREFERRED, "Failed to unsubscribe from topic: preferred_employer_" + employerUID);
                     }
                 });
     }

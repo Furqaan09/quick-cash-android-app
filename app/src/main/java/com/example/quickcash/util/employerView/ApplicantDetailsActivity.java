@@ -37,6 +37,7 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
     private static final String STATUS_PENDING = "Pending";
     private static final String STATUS_SUBMITTED = "Submitted";
     private static final String STATUS_HIRED = "Hired";
+    private static final String APPLICANT_STATUS = "applicantStatus";
 
     // Declaring UI elements and instance variables
     private TextView shortlistedTextView;
@@ -152,7 +153,7 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
             jobIdTextView.setText("Job ID: "+applicant.getJobId());
 
             // Retrieve the application status and set the Ui accordingly
-            applicationRef.child("applicantStatus").addValueEventListener(new ValueEventListener() {
+            applicationRef.child(APPLICANT_STATUS).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     String status = snapshot.getValue(String.class);
@@ -255,7 +256,7 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
     // This method sets the applicant Status as "Rejected" in the firebase and updates the Ui
     private void onRejectClicked() {
         // Update application status to 'Rejected' in Firebase
-        applicationRef.child("applicantStatus").setValue(STATUS_REJECTED)
+        applicationRef.child(APPLICANT_STATUS).setValue(STATUS_REJECTED)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Application marked as Rejected", Toast.LENGTH_SHORT).show();
                     manageStatusView(STATUS_REJECTED);
@@ -264,7 +265,7 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
 
     // This method sets the applicant Status as "Shortlisted" in the firebase and updates the Ui
     private void onShortlistClicked() {
-        applicationRef.child("applicantStatus").setValue(STATUS_SHORTLISTED)
+        applicationRef.child(APPLICANT_STATUS).setValue(STATUS_SHORTLISTED)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Application marked as Shortlisted", Toast.LENGTH_SHORT).show();
                     manageStatusView(STATUS_SHORTLISTED);
@@ -306,13 +307,13 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
             HashMap<String, Object> updates = new HashMap<>();
             updates.put("salary", salary);
             updates.put("startDate", startDate);
-            updates.put("applicantStatus", STATUS_PENDING);
+            updates.put(APPLICANT_STATUS, STATUS_PENDING);
 
             // Push the updates to Firebase under the applicant node
             applicationRef.updateChildren(updates)
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(this, "Job offer sent. Application marked as Pending", Toast.LENGTH_SHORT).show();
-                        manageStatusView("Pending");
+                        manageStatusView(STATUS_PENDING);
                     });
         }
     }
