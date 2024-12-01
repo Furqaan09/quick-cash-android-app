@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".util.employerView.JobApplicantsActivity">
+    tools:context=".util.employeeView.PreferredEmployersActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,43 +18,46 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/jobApplicantsTopLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="24sp"
-                android:gravity="center_horizontal"
+                android:layout_marginVertical="20sp"
+                android:gravity="center"
                 android:orientation="horizontal"
                 tools:ignore="MissingConstraints">
 
                 <TextView
-                    android:id="@+id/myPostingsTitle"
+                    android:id="@+id/preferredEmployersTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Job Applicants"
+                    android:text="Preferred Employers"
                     android:textColor="#2196F3"
                     android:textSize="30sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@+id/jobApplicantsTopLayout"
-                    app:layout_constraintStart_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="parent" />
+                    android:textStyle="bold" />
 
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_weight="1" />
-
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/applicantsRecyclerView"
+                android:id="@+id/preferredEmployersRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/jobApplicantsTopLayout"
                 tools:itemCount="3"
-                tools:listitem="@layout/applicant_item_view" />
+                tools:listitem="@layout/preferred_employer_item_view" />
+
+            <Button
+                android:id="@+id/dashboardButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#677676"
+                android:text="Return to Dashboard" />
 
         </LinearLayout>
     </ScrollView>

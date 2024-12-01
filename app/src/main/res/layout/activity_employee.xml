@@ -169,19 +169,29 @@
 
                 <Button
                     android:id="@+id/applicationStatusButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Application Status"
                     android:backgroundTint="#677676"
-                    android:layout_marginEnd="8dp" />
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="8dp" />
 
                 <Button
-                    android:id="@+id/logoutButton"
+                    android:id="@+id/preferredEmployersButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Preferred Employers"
                     android:backgroundTint="#677676"
-                    android:text="Logout" />
+                    android:layout_marginHorizontal="8dp" />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#677676"
+                android:text="Logout" />
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

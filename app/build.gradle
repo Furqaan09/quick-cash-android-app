@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
@@ -30,6 +31,15 @@ android {
     }
     buildFeatures {
         viewBinding true
+    }
+
+    packagingOptions {
+        merge 'META-INF/INDEX.LIST'
+        merge 'META-INF/LICENSE'
+        merge 'META-INF/LICENSE.txt'
+        merge 'META-INF/NOTICE'
+        merge 'META-INF/NOTICE.txt'
+        merge 'META-INF/DEPENDENCIES'
     }
 }
 
@@ -61,6 +71,7 @@ dependencies {
 
     testImplementation libs.androidx.core
     testImplementation libs.androidx.junit
+    testImplementation libs.uiautomator
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.espresso.core
     androidTestImplementation libs.espresso.intents
@@ -71,4 +82,17 @@ dependencies {
 
     // UI Automator
     androidTestImplementation libs.uiautomator
+
+    //3rd part library
+    implementation libs.volley
+
+    //messaging library
+    implementation libs.firebase.messaging
+
+    //libraries for getting error messages from firebase
+    implementation libs.firebase.crashlytics
+    implementation libs.firebase.analytics
+
+    //auth library
+    implementation libs.google.auth.library.oauth2.http
 }

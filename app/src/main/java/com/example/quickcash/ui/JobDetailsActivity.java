@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.quickcash.firebase.FirebaseCompleteJob;
+import com.example.quickcash.util.employeeView.EmployerProfileActivity;
 import com.example.quickcash.util.employerView.JobApplicantsActivity;
 import com.example.quickcash.R;
 import com.example.quickcash.util.jobPost.JobPost;
@@ -93,6 +94,15 @@ public class JobDetailsActivity extends AppCompatActivity {
             Button applyButton = findViewById(R.id.applyButton);
             applyButton.setVisibility(View.VISIBLE);
             applyButton.setOnClickListener(view -> handelApply());
+
+            Button employerProfileButton = findViewById(R.id.employerProfileButton);
+            employerProfileButton.setVisibility(View.VISIBLE);
+            employerProfileButton.setOnClickListener(v -> {
+                Intent intent = new Intent(JobDetailsActivity.this, EmployerProfileActivity.class);
+                intent.putExtra("JobID" ,jobPost.getJobID());
+                startActivity(intent);
+            });
+
         } else {
             Button viewApplicantsButton = findViewById(R.id.viewApplicantsButton);
             viewApplicantsButton.setVisibility(View.VISIBLE);

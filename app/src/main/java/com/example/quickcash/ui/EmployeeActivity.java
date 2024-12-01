@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quickcash.util.employeeView.EmployeeApplicationsActivity;
+import com.example.quickcash.util.employeeView.PreferredEmployersActivity;
 import com.example.quickcash.util.jobPost.JobPost;
 import com.example.quickcash.util.jobPost.JobPostAdapter;
 import com.example.quickcash.util.jobFilter.JobPostFilter;
@@ -137,6 +138,7 @@ public class EmployeeActivity extends AppCompatActivity implements JobPostAdapte
         fetchJobPosts();
         setupLogoutButton();
         setUpGoogleMapButton();
+        setUpPreferredEmployersButton();
     }
 
     private void setupLogoutButton() {
@@ -253,8 +255,16 @@ public class EmployeeActivity extends AppCompatActivity implements JobPostAdapte
         mapsButton.setOnClickListener(view -> onViewOnMapsClick());
     }
 
-    public void onViewOnMapsClick() {
+    private void onViewOnMapsClick() {
         Intent mapsIntent = new Intent(EmployeeActivity.this, MapsActivity.class);
         startActivity(mapsIntent);
+    }
+
+    private void setUpPreferredEmployersButton() {
+        Button prefEmployersButton = findViewById(R.id.preferredEmployersButton);
+        prefEmployersButton.setOnClickListener(view -> {
+            Intent intent = new Intent(EmployeeActivity.this, PreferredEmployersActivity.class);
+            startActivity(intent);
+        });
     }
 }
