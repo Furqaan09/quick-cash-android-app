@@ -143,9 +143,12 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
             TextView applicantEmailTextView = findViewById(R.id.applicantEmailTextView);
             TextView applicantPhoneTextView = findViewById(R.id.applicantPhoneTextView);
             TextView jobIdTextView = findViewById(R.id.applicantJobIDTextView);
+            TextView applicantRatingtextView = findViewById(R.id.applicantRatingTextView);
+
             applicantNameTextView.setText("Name: "+applicant.getApplicantName());
             applicantEmailTextView.setText("Email: "+applicant.getApplicantEmail());
             applicantPhoneTextView.setText("Phone: "+applicant.getApplicantPhone());
+            getEmployeeRating(rating -> applicantRatingtextView.setText("Rating: "+rating));
             jobIdTextView.setText("Job ID: "+applicant.getJobId());
 
             // Retrieve the application status and set the Ui accordingly
@@ -162,6 +165,41 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    public void getEmployeeRating(RatingCallback callback) {
+        DatabaseReference employeeRef = FirebaseDatabase.getInstance().getReference("users/employee");
+
+        employeeRef.orderByChild("email").equalTo(applicant.getApplicantEmail()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot employeeSnapshot : snapshot.getChildren()) {
+                    String ratingValue = employeeSnapshot.child("ratingValue").getValue(String.class);
+                    String ratingCount = employeeSnapshot.child("ratingCount").getValue(String.class);
+
+                    if (ratingCount == null && ratingValue == null) {
+                        callback.onRatingCalculated("No ratings yet!");
+                    } else {
+                        double value = Double.parseDouble(ratingValue);
+                        int count = Integer.parseInt(ratingCount);
+
+                        double rating = value / count;
+
+                        // Pass the calculated rating to the callback
+                        callback.onRatingCalculated(String.format("%.1f", rating));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                System.err.println("Error fetching employee details: " + error);
+            }
+        });
+    }
+
+    public interface RatingCallback {
+        void onRatingCalculated(String rating);
     }
 
     // This method retrieves the resume download Uri from the database and opens it in browser window

@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.quickcash.R;
 import com.example.quickcash.firebase.FirebaseRating;
+import com.example.quickcash.util.employeeView.EmployeeApplicationsActivity;
 import com.example.quickcash.util.employerView.HiredEmployeesActivity;
 
 public class RatingActivity extends AppCompatActivity {
@@ -120,13 +121,24 @@ public class RatingActivity extends AppCompatActivity {
 
     // Handle the submit behaviour
     private void handleSubmit() {
+
+        // Retrieve the ID of the user
         String employeeID = getIntent().getStringExtra("employeeID");
+        String employerID = getIntent().getStringExtra("employerID");
+
         String applicationID = getIntent().getStringExtra("applicationID");
         String ratingStr = String.valueOf(rating);
 
-        if (employeeID != null) {
-            firebaseRating.rateEmployee(employeeID, applicationID, ratingStr);
+        // Depending on the role of the user, rate appropriately
+        if (employeeID != null && employerID == null) {
+            String role = "employee";
+            firebaseRating.rateUser(role, employeeID, applicationID, ratingStr);
             Intent intent = new Intent(RatingActivity.this, HiredEmployeesActivity.class);
+            startActivity(intent);
+        } else if (employerID != null && employeeID == null) {
+            String role = "employer";
+            firebaseRating.rateUser(role, employerID, applicationID, ratingStr);
+            Intent intent = new Intent(RatingActivity.this, EmployeeApplicationsActivity.class);
             startActivity(intent);
         }
     }
