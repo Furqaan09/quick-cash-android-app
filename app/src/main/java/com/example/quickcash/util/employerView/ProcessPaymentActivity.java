@@ -38,6 +38,7 @@ public class ProcessPaymentActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private String amount;
     private String jobId;
+    private String applicationId;
 
     // UI Elements
     TextView paymentAmountTextView;
@@ -53,12 +54,12 @@ public class ProcessPaymentActivity extends AppCompatActivity {
         paymentAmountTextView = findViewById(R.id.paymentAmountTextView);
         payNowButton = findViewById(R.id.payNowButton);
         paymentStatusTextView = findViewById(R.id.paymentStatusTextView);
-        paymentStatusTextView = findViewById(R.id.paymentStatusTextView);
         configurePayPal();
         initActivityLauncher();
         setListeners();
 
         completeJob = new FirebaseCompleteJob();
+        applicationId = getIntent().getStringExtra("applicationId");
         jobId = getIntent().getStringExtra("jobId");
         amount = getIntent().getStringExtra("salary");
         Log.d("Salary", "Set salary: " + amount);
@@ -86,7 +87,7 @@ public class ProcessPaymentActivity extends AppCompatActivity {
                                 paymentStatusTextView.setText(String.format("Payment %s\nPayment ID: %s", state, payID));
 
                                 // Update the status in the database
-                                completeJob.setPaymentStatusPaid(jobId);
+                                completeJob.setPaymentStatusPaid(applicationId);
 
                             } catch (JSONException e) {
                                 Log.e("PaymentError", "Failed to parse payment confirmation.", e);

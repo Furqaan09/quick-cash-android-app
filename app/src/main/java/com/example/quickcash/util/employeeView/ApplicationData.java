@@ -14,11 +14,13 @@ public class ApplicationData implements Serializable {
     private String employerEmail;
     private String applicationId;
     private String employerRatingStatus;
+    private String paymentStatus;
+    private String salary;
 
 
     public ApplicationData(String jobIdAndTitle, String companyName, String jobLocation,
                            String applicationDate, String status, String employerEmail,
-                           String applicationId, String employerRatingStatus) {
+                           String applicationId, String employerRatingStatus, String paymentStatus, String salary) {
         this.jobIdAndTitle = jobIdAndTitle;
         this.companyName = companyName;
         this.jobLocation = jobLocation;
@@ -27,6 +29,8 @@ public class ApplicationData implements Serializable {
         this.employerEmail = employerEmail;
         this.applicationId = applicationId;
         this.employerRatingStatus = employerRatingStatus;
+        this.paymentStatus = paymentStatus;
+        this.salary = salary;
     }
 
     public String getJobIdAndTitle() {
@@ -67,5 +71,13 @@ public class ApplicationData implements Serializable {
 
     public String getEmployerRatingStatus() {
         return employerRatingStatus;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public String getSalary() {
+        return salary;
     }
 }

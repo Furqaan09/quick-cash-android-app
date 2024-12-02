@@ -21,6 +21,7 @@ public class HiredEmployeeAdapter extends RecyclerView.Adapter<HiredEmployeeAdap
     public interface OnItemClickListener {
         void onMarkCompleteClick(HiredEmployee employee);
         void onRateEmployeeClick(HiredEmployee employee);
+        void onPayNowClick(HiredEmployee employee);
     }
 
     private ArrayList<HiredEmployee> hiredEmployees;
@@ -60,6 +61,7 @@ public class HiredEmployeeAdapter extends RecyclerView.Adapter<HiredEmployeeAdap
         TextView jobStatus;
         Button markAsCompleteButton;
         Button rateEmployeeButton;
+        Button payNowButton;
 
         public HiredEmployeeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -72,6 +74,7 @@ public class HiredEmployeeAdapter extends RecyclerView.Adapter<HiredEmployeeAdap
             jobStatus = itemView.findViewById(R.id.jobStatusTextView);
             markAsCompleteButton = itemView.findViewById(R.id.markAsCompleteButton);
             rateEmployeeButton = itemView.findViewById(R.id.rateEmployeeButton);
+            payNowButton = itemView.findViewById(R.id.payNowButton);
         }
 
         public void bind(HiredEmployee employee, OnItemClickListener listener) {
@@ -83,6 +86,7 @@ public class HiredEmployeeAdapter extends RecyclerView.Adapter<HiredEmployeeAdap
             String empName = employee.getEmployeeName();
             String status = employee.getJobStatus();
             String ratingStatus = employee.getRatingStatus();
+            String paymentStatus = employee.getPaymentStatus();
 
             jobTitleAndId.setText("Job Title: " + title);
             jobCompany.setText("Company: " + company);
@@ -91,7 +95,7 @@ public class HiredEmployeeAdapter extends RecyclerView.Adapter<HiredEmployeeAdap
             employeeName.setText("Employee Name: " + empName);
             employeeEmail.setText("Employee Email: " + empEmail);
 
-            manageFragment(status, ratingStatus);
+            manageFragment(status, ratingStatus, paymentStatus);
 
             // Set up click listener for viewDetailsButton
             markAsCompleteButton.setOnClickListener(v -> {
@@ -101,10 +105,14 @@ public class HiredEmployeeAdapter extends RecyclerView.Adapter<HiredEmployeeAdap
             rateEmployeeButton.setOnClickListener(v -> {
                 listener.onRateEmployeeClick(employee);
             });
+
+            payNowButton.setOnClickListener(v -> {
+                listener.onPayNowClick(employee);
+            });
         }
 
         // Manage the buttons based on the retrieved status
-        public void manageFragment(String status, String ratingStatus) {
+        public void manageFragment(String status, String ratingStatus, String paymentStatus) {
             if (status.equals("Hired")) {
                 jobStatus.setText("In Progress");
             } else if (status.equals("Completed")) {
@@ -113,6 +121,9 @@ public class HiredEmployeeAdapter extends RecyclerView.Adapter<HiredEmployeeAdap
                 markAsCompleteButton.setVisibility(View.GONE);
                 if (ratingStatus.equals("Not Reviewed")) {
                     rateEmployeeButton.setVisibility(View.VISIBLE);
+                }
+                if (paymentStatus.equals("Not Paid")) {
+                    payNowButton.setVisibility(View.VISIBLE);
                 }
             }
         }

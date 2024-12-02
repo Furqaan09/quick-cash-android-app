@@ -16,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.quickcash.R;
 import com.example.quickcash.firebase.FirebaseCRUD;
-import com.example.quickcash.firebase.FirebasePreferredEmployerJobPostNotifier;
+import com.example.quickcash.firebase.FirebaseNotificationSender;
 import com.example.quickcash.ui.EmployerActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -37,7 +37,7 @@ public class JobPostingActivity extends AppCompatActivity {
     private TextView statusLabel;
 
     private FirebaseCRUD firebaseCRUD;
-    private FirebasePreferredEmployerJobPostNotifier firebasePreferredEmployerJobPostNotifier;
+    private FirebaseNotificationSender notificationSender;
     private FirebaseAuth mAuth;
 
     @Override
@@ -82,7 +82,7 @@ public class JobPostingActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseCRUD = new FirebaseCRUD(firebaseDatabase);
-        firebasePreferredEmployerJobPostNotifier = new FirebasePreferredEmployerJobPostNotifier(this, getEmployerUid());
+        notificationSender = new FirebaseNotificationSender(this, getEmployerUid());
     }
 
     /**
@@ -134,8 +134,9 @@ public class JobPostingActivity extends AppCompatActivity {
             // Write the JobPost object to the Firebase database.
             firebaseCRUD.createJobPost(jobPost);
 
-            // Send a notification to the subscribed employees about the newly posted job
-            firebasePreferredEmployerJobPostNotifier.sendJobNotification(jobTitle, jobId, jobType, location);
+            // Send notification to the subscribed employees about the newly posted job
+            notificationSender.sendJobNotification(jobPost, "preferred_job");
+            notificationSender.sendJobNotification(jobPost, "preferred_employer");
 
             // Display success message.
             statusLabel.setText(R.string.SUCCESSFUL_JOB_POST_FEEDBACK);

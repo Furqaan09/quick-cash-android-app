@@ -54,25 +54,6 @@
             android:backgroundTint="#2196F3"
             android:text="View Details"
             android:textSize="14sp" />
-        <Button
-            android:id="@+id/markCompleteButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Mark Complete"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="#2196F3"
-            android:textColor="#FFFFFF" />
-
-        <Button
-            android:id="@+id/processPaymentButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Process Payment"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="#2196F3"
-            android:textColor="#FFFFFF"
-            android:visibility="gone" />
-
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

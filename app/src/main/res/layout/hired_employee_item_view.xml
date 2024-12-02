@@ -81,15 +81,34 @@
             android:text="Mark as Completed"
             android:textSize="14sp"  />
 
-        <Button
-            android:id="@+id/rateEmployeeButton"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
-            android:backgroundTint="#757575"
-            android:text="Rate Employee"
-            android:textSize="14sp"
-            android:visibility="gone" />
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/payNowButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginVertical="8dp"
+                android:layout_marginHorizontal="5dp"
+                android:backgroundTint="#757575"
+                android:text="Pay Now"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/rateEmployeeButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginVertical="8dp"
+                android:layout_marginHorizontal="5dp"
+                android:backgroundTint="#757575"
+                android:text="Rate Employee"
+                android:textSize="14sp"
+                android:visibility="gone" />
+        </LinearLayout>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

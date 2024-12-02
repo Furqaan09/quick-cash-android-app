@@ -101,19 +101,13 @@ public class JobApplicantsActivity extends AppCompatActivity implements Applican
                     }
                 }
 
-                // If no applicants are found, show a message
-                if (applicantList.isEmpty()) {
-                    Toast.makeText(JobApplicantsActivity.this, "No applicants found for this job", Toast.LENGTH_SHORT).show();
-                }
-
                 // Notify the adapter to update the RecyclerView
                 applicantAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle the error case where Firebase data fetching fails
-                Toast.makeText(JobApplicantsActivity.this, "Error fetching applicants: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                System.err.println("Error fetching applications: "+error.getMessage());
             }
         });
     }

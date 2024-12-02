@@ -77,6 +77,8 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             String date = applicationData.getApplicationDate();
             String status = applicationData.getStatus();
             String ratingStatus = applicationData.getEmployerRatingStatus();
+            String paymentStatus = applicationData.getPaymentStatus();
+            String salary = applicationData.getSalary();
 
             jobTitleAndId.setText("Job Title: " + title);
             companyName.setText("Company: " + company);
@@ -84,7 +86,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             appliedDate.setText("Application Date: " + date);
             applicationStatus.setText(status);
 
-            manageFragment(status, ratingStatus);
+            manageFragment(status, ratingStatus, paymentStatus, salary);
 
             // Set up click listener for viewDetailsButton
             viewOfferButton.setOnClickListener(v -> {
@@ -96,7 +98,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             });
         }
 
-        public void manageFragment(String status, String ratingStatus) {
+        public void manageFragment(String status, String ratingStatus, String paymentStatus, String salary) {
             if (status.equals("Shortlisted")) {
                 applicationStatus.setTextColor(Color.parseColor("#D9C711"));
             } else if (status.equals("Rejected")) {
@@ -110,6 +112,9 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
                 applicationStatus.setTextColor(Color.parseColor("#757575"));
                 if (ratingStatus.equals("Not Reviewed")) {
                     rateEmployerButton.setVisibility(View.VISIBLE);
+                }
+                if (paymentStatus.equals("Paid")) {
+                    applicationStatus.setText("$" + salary + " has been paid for the job");
                 }
             }
         }

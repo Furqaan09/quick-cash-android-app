@@ -40,6 +40,8 @@ public class FirebaseEmployeeApplicationInfo {
                     String status = applicationSnapshot.child("applicantStatus").getValue(String.class);
                     String applicantEmail = applicationSnapshot.child("applicantEmail").getValue(String.class);
                     String employerRatingStatus = applicationSnapshot.child("employerReview").getValue(String.class);
+                    String paymentStatus = applicationSnapshot.child("paymentStatus").getValue(String.class);
+                    String salary = applicationSnapshot.child("salary").getValue(String.class);
 
                     if (employeeEmail.equals(applicantEmail) && jobId != null) {
                         fetchJobDetails(jobId, (jobTitle, companyName, jobLocation, jobPosterId) -> {
@@ -52,7 +54,9 @@ public class FirebaseEmployeeApplicationInfo {
                                     status,
                                     jobPosterId,
                                     applicationId,
-                                    employerRatingStatus
+                                    employerRatingStatus,
+                                    paymentStatus,
+                                    salary
                             );
                             employeeApplications.add(applicationData);
 

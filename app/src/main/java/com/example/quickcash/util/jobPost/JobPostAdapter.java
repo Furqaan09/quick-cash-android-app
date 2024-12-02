@@ -26,13 +26,11 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
 
     private ArrayList<JobPost> jobPostList;
     private OnItemClickListener listener;
-    private static String role;
 
     // Modify the constructor to accept the listener.
-    public JobPostAdapter(ArrayList<JobPost> jobPostList, OnItemClickListener listener, String role) {
+    public JobPostAdapter(ArrayList<JobPost> jobPostList, OnItemClickListener listener) {
         this.jobPostList = jobPostList;
         this.listener = listener;
-        this.role = role;
     }
 
     @NonNull
@@ -59,9 +57,6 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
         TextView jobType;
         TextView postedDate;
         Button viewDetailsButton;
-        Button markCompleteButton;
-        Button processPaymentButton;
-        FirebaseCompleteJob completeJob;
 
         public JobPostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -70,9 +65,6 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
             jobType = itemView.findViewById(R.id.jobType);
             postedDate = itemView.findViewById(R.id.postedDate);
             viewDetailsButton = itemView.findViewById(R.id.viewDetailsButton);
-            markCompleteButton = itemView.findViewById(R.id.markCompleteButton);
-            processPaymentButton = itemView.findViewById(R.id.processPaymentButton);
-            completeJob = new FirebaseCompleteJob();
         }
 
         public void bind(JobPost jobPost, OnItemClickListener listener) {
@@ -85,53 +77,6 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
             viewDetailsButton.setOnClickListener(v -> {
                 listener.onViewDetailsClick(jobPost);
             });
-
-            if (role.equals("employer")){
-                // Handle Mark Complete button functionality
-                markCompleteButton.setOnClickListener(v -> {
-                    // Change applicant status to "Complete"
-                    completeJob.setApplicantStatusComplete(jobPost.getJobID());
-                    // Hide the Mark Complete button
-                    markCompleteButton.setVisibility(View.GONE);
-                    processPaymentButton.setVisibility(View.VISIBLE);
-                });
-
-                // Handle Process Payment button visibility and functionality
-                completeJob.isApplicantStatusComplete(jobPost.getJobID(), isComplete -> {
-                    if (isComplete) {
-                        markCompleteButton.setVisibility(View.GONE);
-                        processPaymentButton.setVisibility(View.VISIBLE);
-                    } else {
-                        processPaymentButton.setVisibility(View.GONE);
-                    }
-                });
-
-                // Hide payment button if payment has already been made
-                completeJob.isPaymentStatusPaid(jobPost.getJobID(), isPaid -> {
-                    if (isPaid) {
-                        // Payment has been made
-                        markCompleteButton.setVisibility(View.GONE);
-                        processPaymentButton.setVisibility(View.GONE);
-                    }
-                });
-
-                processPaymentButton.setOnClickListener(view -> {
-                    // Navigate to the payment page
-                    Context context = itemView.getContext(); // Get the context from the view
-                    Intent intent = new Intent(context, ProcessPaymentActivity.class);
-                    intent.putExtra("jobId", jobPost.getJobID());
-
-                    // Get the salary for the completed job and move to payment page
-                    completeJob.getSalaryForCompletedJob(jobPost.getJobID(), salary -> {
-                        // Handle the retrieved salary (e.g., display it on the UI)
-                        intent.putExtra("salary", salary);
-                        context.startActivity(intent);
-                    });
-                });
-            } else {
-                markCompleteButton.setVisibility(View.GONE);
-                processPaymentButton.setVisibility(View.GONE);
-            }
         }
     }
 }

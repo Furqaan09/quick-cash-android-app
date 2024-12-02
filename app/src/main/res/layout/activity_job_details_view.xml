@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="15dp">
+            android:padding="15dp" >
 
             <!-- Title Bar with Job ID and Job Title -->
             <!-- Concatenate title and id -->
@@ -213,48 +213,42 @@
                     android:layout_weight="2" />
             </LinearLayout>
 
-            <!-- Payment Status -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
+                android:layout_gravity="center"
+                android:layout_marginVertical="24dp"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/paymentStatusLabel"
+                <Button
+                    android:id="@+id/employerProfileButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Payment Status:"
-                    android:textStyle="bold"
-                    android:layout_weight="1"/>
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="#2196F3"
+                    android:text="Employer Profile"
+                    android:textSize="16sp"
+                    android:layout_weight="1"
+                    android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/paymentStatusDetails"
+                <Button
+                    android:id="@+id/applyButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Not Payed"
-                    android:layout_weight="2" />
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="#2196F3"
+                    android:text="Apply"
+                    android:textSize="16sp"
+                    android:layout_weight="1"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <Button
-                android:id="@+id/employerProfileButton"
+                android:id="@+id/addToPreferredJobsButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="#2196F3"
-                android:text="Employer Profile"
-                android:textSize="16sp"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/applyButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="#2196F3"
-                android:text="Apply"
+                android:backgroundTint="#BCC7D5"
+                android:text="Add to Preferred Jobs"
                 android:textSize="16sp"
                 android:visibility="gone" />
 
@@ -269,6 +263,7 @@
                 android:text="View Applicants"
                 android:textSize="16sp"
                 android:visibility="gone" />
+
         </LinearLayout>
     </ScrollView>
 

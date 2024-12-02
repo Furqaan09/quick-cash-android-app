@@ -1,6 +1,5 @@
 package com.example.quickcash.firebase;
 
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -11,7 +10,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
@@ -20,18 +18,23 @@ public class FirebasePreferredEmployers {
     // Instance variables
     private DatabaseReference prefEmployerRef;
     private DatabaseReference employerRef;
-    private String currentUserUID;
-    private static final String FIREBASE_PREFERRED = "FirebasePreferred";
+    private FirebaseNotificationSubscriptionManager subscriptionManager;
 
     // Constructor
     public FirebasePreferredEmployers() {
         this.prefEmployerRef = FirebaseDatabase.getInstance().getReference("preferred_employers");
         this.employerRef = FirebaseDatabase.getInstance().getReference("users/employer");
-        this.currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        this.subscriptionManager = new FirebaseNotificationSubscriptionManager();
+    }
+
+    public String getCurrentUserUID() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     // This method is used to return all preferred employers for the logged in employee
     public void returnAllPreferredEmployers(OnEmployersLoadedListener listener) {
+        String currentUserUID = getCurrentUserUID();
+
         // Get the current users UID node under the preferred_employers node
         prefEmployerRef.child(currentUserUID).addValueEventListener(new ValueEventListener() {
             @Override
@@ -83,10 +86,12 @@ public class FirebasePreferredEmployers {
 
     // This method removes the employer from the preferred employers list by deleting the node in firebase
     public void removePreferredEmployer(String employerUID, OnEmployerRemovedListener listener) {
+        String currentUserUID = getCurrentUserUID();
+
         prefEmployerRef.child(currentUserUID).child(employerUID).removeValue((error, ref) -> {
             if (error == null) {
                 // Unsubscribe from the topic to stop receiving notifications from this employer
-                unsubscribeFromEmployerTopic(employerUID);
+                subscriptionManager.unsubscribeFromEmployerTopic();
                 listener.onSuccess();
             }
         });
@@ -94,6 +99,8 @@ public class FirebasePreferredEmployers {
 
     // This method adds an Employer to the Preferred employer list by creating a new node in firebase
     public void addPreferredEmployer(String employerEmail) {
+        String currentUserUID = getCurrentUserUID();
+
         employerRef.orderByChild("email").equalTo(employerEmail).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -102,7 +109,7 @@ public class FirebasePreferredEmployers {
 
                     prefEmployerRef.child(currentUserUID).child(employerUID).setValue(true).addOnSuccessListener(aVoid -> {
                         // Subscribe to the topic to start receiving notifications from this employer
-                        subscribeToEmployerTopic(employerUID);
+                        subscriptionManager.subscribeToEmployerTopic();
                     });
                     break;
                 }
@@ -115,29 +122,6 @@ public class FirebasePreferredEmployers {
         });
     }
 
-    // Subscribe to the FCM topic for the employer
-    private void subscribeToEmployerTopic(String employerUID) {
-        FirebaseMessaging.getInstance().subscribeToTopic("preferred_employer_" + employerUID)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d(FIREBASE_PREFERRED, "Subscribed to topic: preferred_employer_" + employerUID);
-                    } else {
-                        Log.e(FIREBASE_PREFERRED, "Failed to subscribe to topic: preferred_employer_" + employerUID);
-                    }
-                });
-    }
-
-    // Unsubscribe from the FCM topic for the employer
-    private void unsubscribeFromEmployerTopic(String employerUID) {
-        FirebaseMessaging.getInstance().unsubscribeFromTopic("preferred_employer_" + employerUID)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d(FIREBASE_PREFERRED, "Unsubscribed from topic: preferred_employer_" + employerUID);
-                    } else {
-                        Log.e(FIREBASE_PREFERRED, "Failed to unsubscribe from topic: preferred_employer_" + employerUID);
-                    }
-                });
-    }
 
     public interface OnEmployersLoadedListener {
         void onEmployersLoaded(ArrayList<PreferredEmployer> preferredEmployers);
