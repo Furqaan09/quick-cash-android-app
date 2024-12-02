@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.quickcash.R;
 import com.example.quickcash.firebase.FirebasePreferredJobs;
+import com.example.quickcash.firebase.FirebaseCompleteJob;
 import com.example.quickcash.util.employeeView.EmployerProfileActivity;
 import com.example.quickcash.util.employerView.JobApplicantsActivity;
 import com.example.quickcash.util.jobPost.JobPost;
@@ -22,6 +23,7 @@ import com.example.quickcash.util.jobPost.JobPost;
 public class JobDetailsActivity extends AppCompatActivity {
 
     JobPost jobPost;
+    FirebaseCompleteJob completeJob;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,8 @@ public class JobDetailsActivity extends AppCompatActivity {
 
         // Get the jobPost from the intent and initialize views
         jobPost = getIntent().getSerializableExtra("jobPost", JobPost.class);
+        // Initialize FirebaseCompleteJob
+        completeJob = new FirebaseCompleteJob();
         initializeViews();
 
         // Manage buttons based on the role of user
@@ -71,6 +75,19 @@ public class JobDetailsActivity extends AppCompatActivity {
 
         TextView postedDate = findViewById(R.id.postedDateDetails);
         postedDate.setText(jobPost.getPostedDate());
+
+        // Handle payment status update
+        // Check if payed
+        completeJob.isPaymentStatusPaid(jobPost.getJobID(), isPaid -> {
+            if (isPaid) {
+                // Get salary
+                completeJob.getSalaryForCompletedJob(jobPost.getJobID(), salary -> {
+                    String text = salary + " has been paid for job " + jobPost.getJobID();
+                    TextView paymentStatus = findViewById(R.id.paymentStatusDetails);
+                    paymentStatus.setText(text);
+                });
+            }
+        });
     }
 
     protected void manageButtons(String role) {

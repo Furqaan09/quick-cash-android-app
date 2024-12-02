@@ -14,18 +14,43 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#D3E0EA"
-            android:layout_gravity="center"
-            android:paddingHorizontal="20dp" >
+            android:layout_gravity=""
+            android:layout_marginHorizontal="15dp" >
+
+            <TextView
+                android:id="@+id/applicationDetailsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Application Details"
+                android:layout_marginVertical="20dp"
+                android:layout_gravity="center"
+                android:textColor="#2196F3"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/applicantJobIDTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Job ID"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp" />
 
             <!-- Applicant Name -->
+            <TextView
+                android:id="@+id/employeeProfileTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Employee Profile:"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginVertical="8dp" />
+
             <TextView
                 android:id="@+id/applicantNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Applicant Name"
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:layout_marginVertical="8dp" />
 
             <!-- Applicant Email -->
@@ -44,19 +69,20 @@
                 android:text="Applicant Phone"
                 android:layout_marginVertical="8dp" />
 
-            <!-- Applicant Job ID -->
             <TextView
-                android:id="@+id/applicantJobIDTextView"
+                android:id="@+id/applicantRatingTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Job ID"
+                android:text="Applicant Rating"
                 android:layout_marginVertical="8dp" />
+
+            <!-- Applicant Job ID -->
 
             <Button
                 android:id="@+id/viewResumeButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginVertical="16dp"
                 android:text="View Resume"
                 android:backgroundTint="#677676"
                 android:layout_gravity="center_horizontal" />

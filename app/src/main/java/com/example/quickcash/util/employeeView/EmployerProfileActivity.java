@@ -18,7 +18,6 @@ public class EmployerProfileActivity extends AppCompatActivity {
     private TextView emailTextView;
     private TextView phoneTextView;
     private TextView ratingTextView;
-    private Button addToPreferredButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +33,7 @@ public class EmployerProfileActivity extends AppCompatActivity {
 
     // Initialize views
     private void initializeViews() {
+        Button addToPreferredButton;
         nameTextView = findViewById(R.id.employerNameTextView);
         emailTextView = findViewById(R.id.employerEmailTextView);
         phoneTextView = findViewById(R.id.employerPhoneTextView);

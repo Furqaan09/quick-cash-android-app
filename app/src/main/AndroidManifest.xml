@@ -19,6 +19,9 @@
             android:name=".util.employerView.HiredEmployeesActivity"
             android:exported="false" />
         <activity
+            android:name=".util.employerView.ProcessPaymentActivity"
+            android:exported="false" />
+        <activity
             android:name=".util.employeeView.PreferredEmployersActivity"
             android:exported="false" />
 

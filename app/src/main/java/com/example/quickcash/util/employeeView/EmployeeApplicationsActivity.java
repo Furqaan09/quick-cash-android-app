@@ -15,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.quickcash.R;
 import com.example.quickcash.firebase.FirebaseEmployeeApplicationInfo;
 import com.example.quickcash.ui.EmployeeActivity;
+import com.example.quickcash.util.employerView.HiredEmployee;
+import com.example.quickcash.util.employerView.HiredEmployeesActivity;
+import com.example.quickcash.util.ratingSystem.RatingActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -72,5 +75,13 @@ public class EmployeeApplicationsActivity extends AppCompatActivity implements A
     public void onViewOfferClick(ApplicationData applicationData) {
         OfferDialog offerDialog = new OfferDialog(this, applicationData);
         offerDialog.show();
+    }
+
+    @Override
+    public void onRateEmployerClick(ApplicationData applicationData){
+        Intent intent = new Intent(EmployeeApplicationsActivity.this, RatingActivity.class);
+        intent.putExtra("employerID", applicationData.getEmployerEmail());
+        intent.putExtra("applicationID", applicationData.getApplicationId());
+        startActivity(intent);
     }
 }

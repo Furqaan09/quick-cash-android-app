@@ -263,6 +263,29 @@
                 android:text="View Applicants"
                 android:textSize="16sp"
                 android:visibility="gone" />
+
+            <!-- Payment Status -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/paymentStatusLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Payment Status:"
+                    android:textStyle="bold"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/paymentStatusDetails"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Not Payed"
+                    android:layout_weight="2" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
