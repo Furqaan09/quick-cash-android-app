@@ -9,6 +9,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -25,6 +28,7 @@ public class FirebaseApplicationSubmission {
     private String jobId;
     private Uri fileUri;
     private String resumeUri;
+    private String applicationDate;
 
     // Constructor
     public FirebaseApplicationSubmission(String appName, String appPhone, String appEmail, String jobId, Uri fileUri, Context context) {
@@ -33,6 +37,7 @@ public class FirebaseApplicationSubmission {
         this.appEmail = appEmail;
         this.jobId = jobId;
         this.fileUri = fileUri;
+        this.applicationDate = getCurrentUTCDate();
         this.context = context;
         this.dbRef = FirebaseDatabase.getInstance().getReference("applications");
         this.stRef = FirebaseStorage.getInstance().getReference();
@@ -73,7 +78,18 @@ public class FirebaseApplicationSubmission {
         applicationData.put("resumeUri", resumeUri);
         applicationData.put("applicantName", appName);
         applicationData.put("applicantPhone", appPhone);
+        applicationData.put("applicationDate", applicationDate);
         applicationData.put("applicantStatus", "Submitted");
         return applicationData;
+    }
+
+    // This method is used to get the current UTC date formatted as "July 11, 2024".
+    private String getCurrentUTCDate() {
+        // Get the current UTC date.
+        LocalDate utcDate = LocalDate.now(ZoneOffset.UTC);
+
+        // Format the date as "October 12, 2024".
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+        return utcDate.format(dateFormatter);
     }
 }

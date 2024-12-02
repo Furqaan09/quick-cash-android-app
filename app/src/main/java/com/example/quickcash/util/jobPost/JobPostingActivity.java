@@ -16,7 +16,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.quickcash.R;
 import com.example.quickcash.firebase.FirebaseCRUD;
+import com.example.quickcash.firebase.FirebaseNotificationSender;
 import com.example.quickcash.ui.EmployerActivity;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.time.LocalDate;
@@ -35,6 +37,8 @@ public class JobPostingActivity extends AppCompatActivity {
     private TextView statusLabel;
 
     private FirebaseCRUD firebaseCRUD;
+    private FirebaseNotificationSender notificationSender;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +54,8 @@ public class JobPostingActivity extends AppCompatActivity {
         // Initialize UI components.
         initializeUIComponents();
 
-        // Initialize firebase database and the CRUD operations.
-        initializeFirebaseCRUD();
+        // Initialize firebase database
+        initializeFirebase();
     }
 
     private void initializeUIComponents() {
@@ -74,9 +78,11 @@ public class JobPostingActivity extends AppCompatActivity {
         });
     }
 
-    private void initializeFirebaseCRUD() {
+    private void initializeFirebase() {
+        mAuth = FirebaseAuth.getInstance();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseCRUD = new FirebaseCRUD(firebaseDatabase);
+        notificationSender = new FirebaseNotificationSender(this, getEmployerUid());
     }
 
     /**
@@ -106,10 +112,10 @@ public class JobPostingActivity extends AppCompatActivity {
         String industry = jobIndustryBox.getText().toString().trim();
         String location = jobLocationBox.getText().toString().trim();
 
-
+        String jobId = JobPost.generateJobID();
         // Encapsulate the data collected into a JobPost object.
         JobPost jobPost = new JobPost(
-                JobPost.generateJobID(),
+                jobId,
                 getIntent().getStringExtra("jobPosterID"),
                 jobTitle,
                 location,
@@ -128,6 +134,10 @@ public class JobPostingActivity extends AppCompatActivity {
             // Write the JobPost object to the Firebase database.
             firebaseCRUD.createJobPost(jobPost);
 
+            // Send notification to the subscribed employees about the newly posted job
+            notificationSender.sendJobNotification(jobPost, "preferred_job");
+            notificationSender.sendJobNotification(jobPost, "preferred_employer");
+
             // Display success message.
             statusLabel.setText(R.string.SUCCESSFUL_JOB_POST_FEEDBACK);
 
@@ -140,5 +150,10 @@ public class JobPostingActivity extends AppCompatActivity {
             // Display error message.
             statusLabel.setText(R.string.UNSUCCESSFUL_JOB_POST_FEEDBACK);
         }
+    }
+
+    // This method is used to retrieve current user's (employer) UID
+    private String getEmployerUid() {
+        return mAuth.getCurrentUser().getUid();
     }
 }

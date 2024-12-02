@@ -1,132 +1,83 @@
 package com.example.quickcash.util.employeeView;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * Represents an application
  */
 public class ApplicationData implements Serializable {
-    private String applicationID;
-    private String jobID;
-    private String applicantEmail;
-    private String applicantPhone;
-    private String applicantName;
-    private String applicationStatus;
+    private String jobIdAndTitle;
+    private String companyName;
+    private String jobLocation;
+    private String applicationDate;
+    private String status;
+    private String employerEmail;
+    private String applicationId;
+    private String employerRatingStatus;
+    private String paymentStatus;
+    private String salary;
 
-    public ApplicationData() {}
 
-    public ApplicationData(String applicationID,
-                           String applicantEmail,
-                           String applicantPhone,
-                           String applicantName,
-                           String applicationStatus,
-                           String jobID) {
-        this.applicationID = applicationID;
-        this.applicantEmail = applicantEmail;
-        this.applicantPhone = applicantPhone;
-        this.applicantName = applicantName;
-        this.applicationStatus = applicationStatus;
-        this.jobID = jobID;
+    public ApplicationData(String jobIdAndTitle, String companyName, String jobLocation,
+                           String applicationDate, String status, String employerEmail,
+                           String applicationId, String employerRatingStatus, String paymentStatus, String salary) {
+        this.jobIdAndTitle = jobIdAndTitle;
+        this.companyName = companyName;
+        this.jobLocation = jobLocation;
+        this.applicationDate = applicationDate;
+        this.status = status;
+        this.employerEmail = employerEmail;
+        this.applicationId = applicationId;
+        this.employerRatingStatus = employerRatingStatus;
+        this.paymentStatus = paymentStatus;
+        this.salary = salary;
     }
 
-    public static String generateApplicationID() {
-        return UUID.randomUUID().toString();
+    public String getJobIdAndTitle() {
+        return jobIdAndTitle;
     }
 
-    /**
-     * Get application ID
-     * @return application ID
-     */
-    public String getApplicationID() {
-        return applicationID;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    /**
-     * Set application ID
-     * @param applicationID application ID
-     */
-    public void setApplicationID(String applicationID) {
-        this.applicationID = applicationID;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
-    /**
-     * Get job ID
-     * @return job ID
-     */
-    public String getJobID() {
-        return jobID;
+    public String getJobLocation() {
+        return jobLocation;
     }
 
-    /**
-     * Set job ID
-     * @param jobID job ID
-     */
-    public void setJobID(String jobID) {
-        this.jobID = jobID;
+    public String getApplicationDate() {
+        return applicationDate;
     }
 
-    /**
-     * Get applicant email
-     * @return applicant email
-     */
-    public String getApplicantEmail() {
-        return applicantEmail;
+    public String getStatus() {
+        return status;
     }
 
-    /**
-     * Set applicant email
-     * @param applicantEmail applicant email
-     */
-    public void setApplicantEmail(String applicantEmail) {
-        this.applicantEmail = applicantEmail;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    /**
-     * Get applicant phone
-     * @return applicant phone
-     */
-    public String getApplicantPhone() {
-        return applicantPhone;
+    public String getEmployerEmail() {
+        return employerEmail;
     }
 
-    /**
-     * Set applicant phone
-     * @param applicantPhone applicant phone
-     */
-    public void setApplicantPhone(String applicantPhone) {
-        this.applicantPhone = applicantPhone;
+    public String getApplicationId() {
+        return applicationId;
     }
 
-    /**
-     * Get applicant name
-     * @return applicant name
-     */
-    public String getApplicantName() {
-        return applicantName;
+    public String getEmployerRatingStatus() {
+        return employerRatingStatus;
     }
 
-    /**
-     * Set applicant name
-     * @param applicantName applicant name
-     */
-    public void setApplicantName(String applicantName) {
-        this.applicantName = applicantName;
+    public String getPaymentStatus() {
+        return paymentStatus;
     }
 
-    /**
-     * Get application status
-     * @return application status
-     */
-    public String getApplicationStatus() {
-        return applicationStatus;
-    }
-
-    /**
-     * Set application status
-     * @param applicationStatus application status
-     */
-    public void setApplicationStatus(String applicationStatus) {
-        this.applicationStatus = applicationStatus;
+    public String getSalary() {
+        return salary;
     }
 }

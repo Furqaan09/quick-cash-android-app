@@ -18,8 +18,6 @@ import java.util.Map;
  */
 public class FirebaseCRUD {
 
-    public static final String FIREBASE_DATABASE_URL = "https://quick-cash-64e58-default-rtdb.firebaseio.com/";
-
     private final DatabaseReference databaseReference;
     private final Map<String, JobPost> cachedJobPosts;
 
@@ -98,50 +96,4 @@ public class FirebaseCRUD {
         return new ArrayList<>(cachedJobPosts.values());
     }
 
-    /**
-     * Retrieves all job posts from the cache that match the given jobPosterID.
-     *
-     * @param jobPosterID the ID of the job poster (employer email).
-     * @return an ArrayList of JobPost objects.
-     */
-    public ArrayList<JobPost> readJobPostsByPosterID(String jobPosterID) {
-        ArrayList<JobPost> jobPostsByPoster = new ArrayList<>();
-        for (JobPost jobPost : cachedJobPosts.values()) {
-            if (jobPosterID.equals(jobPost.getJobPosterID())) {
-                jobPostsByPoster.add(jobPost);
-            }
-        }
-        return jobPostsByPoster;
-    }
-
-    /**
-     * Updates an existing job post in the database.
-     * If the jobID exists, updates all fields from the updatedJobPost argument except the jobID.
-     *
-     * @param jobID          the job ID of the post to update.
-     * @param updatedJobPost the JobPost object containing updated data.
-     */
-    public void updateJobPost(String jobID, JobPost updatedJobPost) {
-
-        // Ensure the jobID remains the same.
-        updatedJobPost.setJobID(jobID);
-
-        // Check if jobID exists in the cache.
-        if (cachedJobPosts.containsKey(jobID)) {
-            databaseReference.child(jobID).setValue(updatedJobPost);
-        } else {
-
-            // Handle the case where jobID does not exist.
-            throw new IllegalArgumentException("JobID " + jobID + " does not exist. Cannot update.");
-        }
-    }
-
-    /**
-     * Removes a job post from the Firebase database.
-     *
-     * @param jobID the job ID of the post to delete.
-     */
-    public void deleteJobPost(String jobID) {
-        databaseReference.child(jobID).removeValue();
-    }
 }

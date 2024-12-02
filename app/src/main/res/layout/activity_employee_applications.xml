@@ -40,29 +40,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/employeeTopLayout"
                 tools:itemCount="3"
-                tools:listitem="@layout/job_application_item_view" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp">
-
-                <Button
-                    android:id="@+id/shortlistedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Shortlisted"
-                    android:layout_marginEnd="8dp" />
-
-                <Button
-                    android:id="@+id/offersButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Offers" />
-
-            </LinearLayout>
+                tools:listitem="@layout/employee_application_item_view" />
 
             <Button
                 android:id="@+id/dashboardButton"
@@ -70,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
+                android:backgroundTint="#677676"
                 android:text="Return to Dashboard" />
 
         </LinearLayout>

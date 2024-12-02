@@ -37,6 +37,7 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
     private static final String STATUS_PENDING = "Pending";
     private static final String STATUS_SUBMITTED = "Submitted";
     private static final String STATUS_HIRED = "Hired";
+    private static final String APPLICANT_STATUS = "applicantStatus";
 
     // Declaring UI elements and instance variables
     private TextView shortlistedTextView;
@@ -109,15 +110,16 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
     private void getApplicationNode(String applicantEmail) {
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("applications");
 
-        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot applicationSnapshot : snapshot.getChildren()) {
                     // Retrieve the applicantEmail field within each application node
                     String email = applicationSnapshot.child("applicantEmail").getValue(String.class);
+                    String jobId = applicationSnapshot.child("jobId").getValue(String.class);
 
                     // Check if this email matches the input email
-                    if (applicantEmail.equals(email)) {
+                    if (applicantEmail.equals(email) && applicant.getJobId().equals(jobId)) {
                         applicationId = applicationSnapshot.getKey();
                         // Initialize applicationRef to point this node to make for future references
                         applicationRef = FirebaseDatabase.getInstance().getReference("applications").child(applicationId);
@@ -142,13 +144,16 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
             TextView applicantEmailTextView = findViewById(R.id.applicantEmailTextView);
             TextView applicantPhoneTextView = findViewById(R.id.applicantPhoneTextView);
             TextView jobIdTextView = findViewById(R.id.applicantJobIDTextView);
+            TextView applicantRatingtextView = findViewById(R.id.applicantRatingTextView);
+
             applicantNameTextView.setText("Name: "+applicant.getApplicantName());
             applicantEmailTextView.setText("Email: "+applicant.getApplicantEmail());
             applicantPhoneTextView.setText("Phone: "+applicant.getApplicantPhone());
+            getEmployeeRating(rating -> applicantRatingtextView.setText("Rating: "+rating));
             jobIdTextView.setText("Job ID: "+applicant.getJobId());
 
             // Retrieve the application status and set the Ui accordingly
-            applicationRef.child("applicantStatus").addListenerForSingleValueEvent(new ValueEventListener() {
+            applicationRef.child(APPLICANT_STATUS).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     String status = snapshot.getValue(String.class);
@@ -157,10 +162,45 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    Log.d("Status fetch failed", "Error fetching Status!", error.toException());
                 }
             });
         }
+    }
+
+    public void getEmployeeRating(RatingCallback callback) {
+        DatabaseReference employeeRef = FirebaseDatabase.getInstance().getReference("users/employee");
+
+        employeeRef.orderByChild("email").equalTo(applicant.getApplicantEmail()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot employeeSnapshot : snapshot.getChildren()) {
+                    String ratingValue = employeeSnapshot.child("ratingValue").getValue(String.class);
+                    String ratingCount = employeeSnapshot.child("ratingCount").getValue(String.class);
+
+                    if (ratingCount == null && ratingValue == null) {
+                        callback.onRatingCalculated("No ratings yet!");
+                    } else {
+                        double value = Double.parseDouble(ratingValue);
+                        int count = Integer.parseInt(ratingCount);
+
+                        double rating = value / count;
+
+                        // Pass the calculated rating to the callback
+                        callback.onRatingCalculated(String.format("%.1f", rating));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                System.err.println("Error fetching employee details: " + error);
+            }
+        });
+    }
+
+    public interface RatingCallback {
+        void onRatingCalculated(String rating);
     }
 
     // This method retrieves the resume download Uri from the database and opens it in browser window
@@ -216,7 +256,7 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
     // This method sets the applicant Status as "Rejected" in the firebase and updates the Ui
     private void onRejectClicked() {
         // Update application status to 'Rejected' in Firebase
-        applicationRef.child("applicantStatus").setValue(STATUS_REJECTED)
+        applicationRef.child(APPLICANT_STATUS).setValue(STATUS_REJECTED)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Application marked as Rejected", Toast.LENGTH_SHORT).show();
                     manageStatusView(STATUS_REJECTED);
@@ -225,7 +265,7 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
 
     // This method sets the applicant Status as "Shortlisted" in the firebase and updates the Ui
     private void onShortlistClicked() {
-        applicationRef.child("applicantStatus").setValue(STATUS_SHORTLISTED)
+        applicationRef.child(APPLICANT_STATUS).setValue(STATUS_SHORTLISTED)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Application marked as Shortlisted", Toast.LENGTH_SHORT).show();
                     manageStatusView(STATUS_SHORTLISTED);
@@ -267,13 +307,13 @@ public class ApplicantDetailsActivity extends AppCompatActivity {
             HashMap<String, Object> updates = new HashMap<>();
             updates.put("salary", salary);
             updates.put("startDate", startDate);
-            updates.put("applicantStatus", STATUS_PENDING);
+            updates.put(APPLICANT_STATUS, STATUS_PENDING);
 
             // Push the updates to Firebase under the applicant node
             applicationRef.updateChildren(updates)
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(this, "Job offer sent. Application marked as Pending", Toast.LENGTH_SHORT).show();
-                        manageStatusView("Pending");
+                        manageStatusView(STATUS_PENDING);
                     });
         }
     }

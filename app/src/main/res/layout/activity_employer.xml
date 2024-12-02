@@ -65,15 +65,28 @@
                 tools:itemCount="3"
                 tools:listitem="@layout/job_item_view" />
 
-            <Button
-                android:id="@+id/logoutButton"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Logout"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"/>
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:id="@+id/hiredEmployeesButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hired Employees"
+                    android:backgroundTint="#677676"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/logoutButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#677676"
+                    android:text="Logout" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

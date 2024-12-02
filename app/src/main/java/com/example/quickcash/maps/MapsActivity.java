@@ -96,8 +96,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     if (!existingMarkers.containsKey(jobId)) {
                         String jobSnippet = getSnippet(companyName, jobType);
-                        Marker marker = mMap.addMarker(new MarkerOptions()
-                                .position(locationLatLng).title(jobTitle).snippet(jobSnippet));
+                        Marker marker = null;
+                        if (locationLatLng != null) {
+                            marker = mMap.addMarker(new MarkerOptions()
+                                    .position(locationLatLng).title(jobTitle).snippet(jobSnippet));
+                        }
                         existingMarkers.put(jobId, marker);
                     }
                 }

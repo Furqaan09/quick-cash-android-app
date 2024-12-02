@@ -10,55 +10,92 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FirebaseEmployeeApplicationInfo {
 
-    private final DatabaseReference databaseReference;
-    private Map<String, ApplicationData> cachedApplications;
+    private DatabaseReference applicationsRef;
+    private DatabaseReference jobPostsRef;
 
-    public DatabaseReference getDatabaseReference() {
-        return databaseReference;
+    public FirebaseEmployeeApplicationInfo() {
+        this.applicationsRef = FirebaseDatabase.getInstance().getReference("applications");
+        this.jobPostsRef = FirebaseDatabase.getInstance().getReference("job_posts");
     }
 
     /**
-     * Constructor initializes the database reference and the cache.
-     * It sets up a listener to keep the cache updated with any changes in the database.
-     *
-     * @param firebaseDatabase the FirebaseDatabase instance.
+     * Return all job applications for a given employee
+     * Search applications by employee email
      */
-    public FirebaseEmployeeApplicationInfo(FirebaseDatabase firebaseDatabase) {
-        this.databaseReference = firebaseDatabase.getReference("applications");
-        this.cachedApplications = new HashMap<>();
-        initializeCache();
-    }
-
-    /**
-     * Initializes the cache by setting up a listener on the database reference.
-     * The cache is updated whenever data changes in the "applications" node.
-     */
-
-    private void initializeCache() {
-        databaseReference.addValueEventListener(new ValueEventListener() {
+    public void returnEmployeeApplications(String employeeEmail, OnApplicationsLoadedListener listener) {
+        applicationsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                cachedApplications.clear();
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    String applicationId = postSnapshot.getKey();
-                    String jobID = postSnapshot.child("jobId").getValue(String.class);
-                    String applicationStatus = postSnapshot.child("applicantStatus").getValue(String.class);
-                    String applicantEmail = postSnapshot.child("applicantEmail").getValue(String.class);
-                    String applicantPhone = postSnapshot.child("applicantPhone").getValue(String.class);
-                    String applicantName = postSnapshot.child("applicantName").getValue(String.class);
-                    ApplicationData jobApplication = new ApplicationData(applicationId, applicantEmail, applicantPhone, applicantName, applicationStatus, jobID);
-                    cachedApplications.put(applicationId, jobApplication);
+                ArrayList<ApplicationData> employeeApplications = new ArrayList<>();
+                int totalApplications = (int) snapshot.getChildrenCount(); // Total nodes to process
+                int[] processedCount = {0}; // Use array to track completion inside callback
+
+                for (DataSnapshot applicationSnapshot : snapshot.getChildren()) {
+                    String applicationId = applicationSnapshot.getKey();
+                    String jobId = applicationSnapshot.child("jobId").getValue(String.class);
+                    String applicationDate = applicationSnapshot.child("applicationDate").getValue(String.class);
+                    String status = applicationSnapshot.child("applicantStatus").getValue(String.class);
+                    String applicantEmail = applicationSnapshot.child("applicantEmail").getValue(String.class);
+                    String employerRatingStatus = applicationSnapshot.child("employerReview").getValue(String.class);
+                    String paymentStatus = applicationSnapshot.child("paymentStatus").getValue(String.class);
+                    String salary = applicationSnapshot.child("salary").getValue(String.class);
+
+                    if (employeeEmail.equals(applicantEmail) && jobId != null) {
+                        fetchJobDetails(jobId, (jobTitle, companyName, jobLocation, jobPosterId) -> {
+                            String jobIdAndTitle = jobTitle + "- #" + jobId;
+                            ApplicationData applicationData = new ApplicationData(
+                                    jobIdAndTitle,
+                                    companyName,
+                                    jobLocation,
+                                    applicationDate,
+                                    status,
+                                    jobPosterId,
+                                    applicationId,
+                                    employerRatingStatus,
+                                    paymentStatus,
+                                    salary
+                            );
+                            employeeApplications.add(applicationData);
+
+                            processedCount[0]++; // Increment processed count
+                            if (processedCount[0] == totalApplications) {
+                                listener.onApplicationsLoaded(employeeApplications); // Notify when all are done
+                            }
+                        });
+                    } else {
+                        processedCount[0]++; // Increment even for skipped entries
+                        if (processedCount[0] == totalApplications) {
+                            listener.onApplicationsLoaded(employeeApplications); // Notify when all are done
+                        }
+                    }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                System.err.println("Error updating cache: " + error.getMessage());
+                System.err.println("Error loading applications: " + error.getMessage());
+            }
+        });
+    }
+
+
+    private void fetchJobDetails(String jobId, JobDetailsCallback callback) {
+        jobPostsRef.child(jobId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String jobTitle = snapshot.child("jobTitle").getValue(String.class);
+                String companyName = snapshot.child("companyName").getValue(String.class);
+                String jobLocation = snapshot.child("location").getValue(String.class);
+                String jobPosterID = snapshot.child("jobPosterID").getValue(String.class);
+                callback.onJobDetailsFetched(jobTitle, companyName, jobLocation, jobPosterID);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                System.err.println("Error fetching job details: " + error.getMessage());
             }
         });
     }
@@ -67,47 +104,7 @@ public class FirebaseEmployeeApplicationInfo {
         void onApplicationsLoaded(ArrayList<ApplicationData> applications);
     }
 
-    /**
-     * Return all job applications for a given employee
-     * Search applications by employee email
-     */
-    public void returnEmployeeApplications(String employeeEmail, OnApplicationsLoadedListener listener) {
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<ApplicationData> employeeApplications = new ArrayList<>();
-                for (ApplicationData application : cachedApplications.values()) {
-                    if (employeeEmail.equals(application.getApplicantEmail())) {
-                        employeeApplications.add(application);
-                    }
-                }
-                listener.onApplicationsLoaded(employeeApplications);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                System.err.println("Error loading applications: " + error.getMessage());
-            }
-        });
-    }
-
-    public void returnEmployeeShortlistedApplications(String employeeEmail, OnApplicationsLoadedListener listener) {
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<ApplicationData> employeeApplications = new ArrayList<>();
-                for (ApplicationData application : cachedApplications.values()) {
-                    if (employeeEmail.equals(application.getApplicantEmail()) && application.getApplicationStatus().equals("Shortlisted")) {
-                        employeeApplications.add(application);
-                    }
-                }
-                listener.onApplicationsLoaded(employeeApplications);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                System.err.println("Error loading applications: " + error.getMessage());
-            }
-        });
+    private interface JobDetailsCallback {
+        void onJobDetailsFetched(String jobTitle, String companyName, String jobLocation, String employerEmail);
     }
 }

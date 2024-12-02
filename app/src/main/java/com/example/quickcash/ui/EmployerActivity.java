@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.quickcash.util.employerView.HiredEmployeesActivity;
 import com.example.quickcash.util.jobPost.JobPost;
 import com.example.quickcash.util.jobPost.JobPostAdapter;
 import com.example.quickcash.util.jobPost.JobPostingActivity;
@@ -63,10 +64,19 @@ public class EmployerActivity extends AppCompatActivity implements JobPostAdapte
         initializeFirebaseCRUD();
         setupRecyclerView();
         fetchJobPosts();
+        setUpHiredEmployeesButton();
 
         // initialize the firebase authorization
         mAuth = FirebaseAuth.getInstance();
         setupLogoutButton();
+    }
+
+    private void setUpHiredEmployeesButton() {
+        Button hiredEmployeesButton = findViewById(R.id.hiredEmployeesButton);
+        hiredEmployeesButton.setOnClickListener(view -> {
+            Intent intent = new Intent(EmployerActivity.this, HiredEmployeesActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void setupLogoutButton() {

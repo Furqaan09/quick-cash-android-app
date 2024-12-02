@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:backgroundTint="#D3E0EA"
     android:layout_marginVertical="7.5dp"
+    app:cardCornerRadius="20dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -13,21 +15,38 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/applicationJobID"
+            android:id="@+id/employerNameTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
-            android:text="Job Title"
+            android:text="Employer Name: Jon Doe"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <TextView
-            android:id="@+id/applicationStatus"
+            android:id="@+id/employerEmailTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="2dp"
-            android:text="Status"
+            android:text="Email: jon.doe@example.com"
             android:textColor="#757575" />
+
+        <TextView
+            android:id="@+id/employerPhoneTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:text="Phone: 9029346377"
+            android:textColor="#757575" />
+
+        <Button
+            android:id="@+id/removeEmployerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:backgroundTint="#FF2626"
+            android:layout_gravity="center"
+            android:text="Remove" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
