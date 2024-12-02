@@ -224,7 +224,7 @@ public class EmployeeActivity extends AppCompatActivity implements JobPostAdapte
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         jobPostList = new ArrayList<>();
-        jobPostAdapter = new JobPostAdapter(jobPostList, this, "employee");
+        jobPostAdapter = new JobPostAdapter(jobPostList, this);
         recyclerView.setAdapter(jobPostAdapter);
     }
 

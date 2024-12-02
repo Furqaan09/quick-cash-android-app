@@ -17,6 +17,7 @@ import com.example.quickcash.R;
 import com.example.quickcash.firebase.FirebasePreferredJobs;
 import com.example.quickcash.firebase.FirebaseCompleteJob;
 import com.example.quickcash.util.employeeView.EmployerProfileActivity;
+import com.example.quickcash.util.employeeView.JobApplicationActivity;
 import com.example.quickcash.util.employerView.JobApplicantsActivity;
 import com.example.quickcash.util.jobPost.JobPost;
 
@@ -75,19 +76,6 @@ public class JobDetailsActivity extends AppCompatActivity {
 
         TextView postedDate = findViewById(R.id.postedDateDetails);
         postedDate.setText(jobPost.getPostedDate());
-
-        // Handle payment status update
-        // Check if payed
-        completeJob.isPaymentStatusPaid(jobPost.getJobID(), isPaid -> {
-            if (isPaid) {
-                // Get salary
-                completeJob.getSalaryForCompletedJob(jobPost.getJobID(), salary -> {
-                    String text = salary + " has been paid for job " + jobPost.getJobID();
-                    TextView paymentStatus = findViewById(R.id.paymentStatusDetails);
-                    paymentStatus.setText(text);
-                });
-            }
-        });
     }
 
     protected void manageButtons(String role) {

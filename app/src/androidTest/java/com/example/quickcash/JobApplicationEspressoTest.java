@@ -14,7 +14,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import com.example.quickcash.ui.JobApplicationActivity;
+import com.example.quickcash.util.employeeView.JobApplicationActivity;
 
 @RunWith(AndroidJUnit4.class)
 public class JobApplicationEspressoTest {

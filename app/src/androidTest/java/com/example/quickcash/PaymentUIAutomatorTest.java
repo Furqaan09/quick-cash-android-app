@@ -44,6 +44,12 @@ public class PaymentUIAutomatorTest {
         loginAsEmployer();
 
         // Find and click Mark Complete button
+        UiObject hiredEmployeesButton = device.findObject(new UiSelector()
+                .resourceId(PACKAGE_NAME + ":id/hiredEmployees"));
+        assertTrue("Hired Employees button should be visible", hiredEmployeesButton.exists());
+        hiredEmployeesButton.click();
+
+        // Find and click Mark Complete button
         UiObject markCompleteButton = device.findObject(new UiSelector()
                 .resourceId(PACKAGE_NAME + ":id/markCompleteButton"));
         assertTrue("Mark Complete button should be visible", markCompleteButton.exists());

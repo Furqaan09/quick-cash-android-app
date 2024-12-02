@@ -40,7 +40,7 @@
             android:name=".util.employeeView.EmployeeApplicationsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.JobApplicationActivity"
+            android:name=".util.employeeView.JobApplicationActivity"
             android:exported="false" />
         <activity
             android:name=".ui.ResetPasswordActivity"
