@@ -1,93 +1,83 @@
-# CSCI3130-Fall2024-G12
+# Job Posting and Application App
 
+## Overview
+This is a job posting and application platform designed to bridge the gap between employers and employees. The app allows employers to post job listings and manage applicants, while enabling employees to search for jobs, apply, and track their application status.
 
+## Features
 
-## Getting started
+### Employer Features
+- **Post Jobs**: Employers can create job postings with details like title, description, location, job type, and salary.
+- **View Applicants**: Employers can view a list of applicants for their job postings and review their profiles.
+- **Shortlist or Reject Applicants**: Employers can mark applications as "Shortlisted" or "Rejected."
+- **Send Job Offers**: Employers can send formal job offers, including salary and start date, to shortlisted candidates.
+- **Track Hiring Status**: Employers can track the hiring status of each application.
+- **Secure Payments**: Employers can pay employees securely through paypal
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### Employee Features
+- **Search and Apply for Jobs**: Employees can browse job listings, search based on criteria, and apply directly.
+- **Application Status Tracking**: Employees can view the status of their applications, such as "Submitted," "Shortlisted," or "Rejected."
+- **Preferred Jobs**: Employees can mark specific job titles as preferred to receive notifications about new postings.
+- **Push Notifications**: Employees receive real-time updates for new job postings and job application status changes.
+- **Google Maps**: Employees can browse and search jobs by location, with a map view.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### Integration Features
+- **Firebase Integration**: Used for authentication, database storage, and push notifications.
+- **Push Notifications**: Real-time notifications for new job postings and application updates using Firebase Cloud Messaging.
+- **Google Maps API**: Enabled location-based job searches.
+- **PayPal API**: Integrated for secure payment processing.
 
-## Add your files
+## Agile Methodologies
+- **Sprint Planning**: User stories were divided and assigned in sprint meetings.
+- **Pair Programming**: Developers collaborated to write and debug code together.
+- **TDD**: Test-driven development ensured robust and reliable code.
+- **Code Reviews**: Regular code reviews maintained quality and clean code practices.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## Technologies Used
+- **Front-End**: XML for layouts, Java for Android development.
+- **Back-End**: Firebase Realtime Database for data storage.
+- **APIs**:
+  - Firebase Authentication
+  - Firebase Cloud Messaging for push notifications
+  - Google Maps API for location-based features
+  - PayPal API for payment processing
 
-```
-cd existing_repo
-git remote add origin https://git.cs.dal.ca/dhameliya/csci3130-fall2024-g12.git
-git branch -M main
-git push -uf origin main
-```
+## System Architecture
+- **Database**: Firebase Realtime Database structured into nodes for users, job postings, applications, and preferred jobs.
+- **Notifications**: Firebase Cloud Messaging topics are used to send updates based on user preferences.
+- **Modular Code**: Features are split into distinct modules for better maintainability.
 
-## Integrate with your tools
+## Challenges
+- **Debugging a Large Codebase**: Managing and debugging interconnected features.
+- **Integrating APIs**: Ensuring seamless integration of Firebase, Google Maps, and PayPal APIs.
+- **Real-Time Notifications**: Implementing push notifications for both preferred jobs and application status updates.
 
-- [ ] [Set up project integrations](https://git.cs.dal.ca/dhameliya/csci3130-fall2024-g12/-/settings/integrations)
+## Future Improvements
+- Adding instant chat between employers and employees.
+- Enhancing search filters for job listings.
+- Expanding support for more payment gateways.
 
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## Setup and Installation
+1. Clone the repository.
+   ```bash
+   git clone https://github.com/toriibarnard/QuickCash.git
+   ```
+2. Open the project in Android Studio.
+3. Configure Firebase:
+   - Add your `google-services.json` file to the `app/` directory.
+   - Enable Firebase Authentication, Realtime Database, and Cloud Messaging.
+4. Set up Google Maps API:
+   - Obtain an API key and add it to your `AndroidManifest.xml`.
+5. Build and run the project on an emulator or physical device.
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+1. **Employer Login**:
+   - Create job postings.
+   - View and manage applications.
+2. **Employee Login**:
+   - Search and apply for jobs.
+   - Track application status.
+3. **Notifications**:
+   - Receive updates about preferred jobs and application statuses.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## Contributors
+- Team of 7 developers following Agile methodologies.
